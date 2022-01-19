@@ -19,4 +19,3 @@ sum = test1+test2+test3
 print('The sum is', sum)
 Average = sum/3
 print('The average is', Average)
-print('Hello world')
