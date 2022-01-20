@@ -1,3 +1,6 @@
+import os
+os.system('cls')
+
 #Question 1:
 print('Greenhill : 10, Portal : 5.33')
 print('Total students : 240, Boys : 120')
