@@ -41,8 +41,10 @@ while(RunGame):
             if int(myNumber) == int(userGuess):
                 print('Correct!')
                 GameOn=False
-            else:
-                print('Incorrect! If you give up, type \"quit\" to end the game.')
+            elif int(myNumber)>int(userGuess):
+                print('Incorrect! Too low.\nIf you give up, type \"quit\" to end the game.')
+            elif int(myNumber)<int(userGuess):
+                print('Incorrect! Too high.\nIf you give up, type \"quit\" to end the game.')
         elif str(userGuess) == 'quit':
             print('Better luck next time!')
             GameOn=False
