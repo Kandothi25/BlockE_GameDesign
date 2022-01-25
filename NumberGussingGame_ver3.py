@@ -1,11 +1,14 @@
+#Ishaan Kandoth
+#1/25/22
+#Number guessing game
 import os, random
 os.system('cls')
 def Menu():
-    print('============================================')
-    print('|                                          |')
-    print('|             Guess the Number             |')
-    print('|                                          |')
-    print('============================================')
+    print('<[]========================================[]>')
+    print(' {                                          }')
+    print(' {             Guess the Number             }')
+    print(' {                                          }')
+    print('<[]========================================[]>')
     print('')
     print('        /+[]====================[]+\ ')
     print('    ---<=+[] type \"1\" for 1-10  []+=>---')
@@ -25,7 +28,10 @@ while(RunGame):
     while(Check):
         try:
             Gamemode=int(input("\nChoose your gamemode: "))
-            Check=False
+            if Gamemode>0 and Gamemode<4:
+                Check=False
+            else:
+                print('Sorry, not an option, please enter \"1\", \"2\" or \"3\" only')
         except ValueError: 
             print('Sorry, not an option, please enter \"1\", \"2\" or \"3\" only')
     if int(Gamemode)==1:
