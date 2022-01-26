@@ -70,8 +70,8 @@ while(RunGame):
             attempts=attempts-1
     print('The number was', myNumber)
     restart=input('Would you like to play again? Type \"yes\" or \"no\"\n')
-    if restart==str('yes'):
+    if restart.lower()==str('yes'):
         print('restarting...')
-    elif restart==str('no'):
+    elif restart.lower()==str('no'):
         RunGame=False
     os.system('cls')
