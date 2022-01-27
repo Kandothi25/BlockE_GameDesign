@@ -67,16 +67,24 @@ while(RunGame):
             elif int(myNumber)<int(userGuess):
                 print('Incorrect! Too high.\nIf you give up, type \"quit\" to end the game.')
                 attempts=attempts-1
-        elif str(userGuess) == 'quit':
+        elif str(userGuess.lower()) == 'quit':
             print('Better luck next time!')
             GameOn=False
         else:
             print('Incorrect! If you give up, type \"quit\" to end the game.')
             attempts=attempts-1
     print('The number was', myNumber)
-    restart=input('Would you like to play again? Type \"yes\" or \"no\"\n')
-    if restart.lower()==str('yes'):
-        print('restarting...')
-    elif restart.lower()==str('no'):
-        RunGame=False
+    print('Would you like to play again? Type \"yes\" or \"no\"')
+    PlayAgain=True
+    while(PlayAgain):
+        restart=input('')
+        if restart.lower()==str('yes'):
+            print('restarting...')
+            PlayAgain=False
+        elif restart.lower()==str('no'):
+            PlayAgain=False
+            RunGame=False
+        else:
+            print('That was not an option. Please type \"yes\" or \"no\"')
     os.system('cls')
+    print('Game Over')
