@@ -34,13 +34,13 @@ while(RunGame):
                 print('Sorry, not an option, please enter \"1\", \"2\" or \"3\" only')
         except ValueError: 
             print('Sorry, not an option, please enter \"1\", \"2\" or \"3\" only')
-    if int(Gamemode)==1:
+    if Gamemode==1:
         myNumber=random.randint(1,10)
         attempts=5
-    elif int(Gamemode)==2:
+    elif Gamemode==2:
         myNumber=random.randint(1,50)
         attempts=10
-    elif int(Gamemode)==3:
+    elif Gamemode==3:
         myNumber=random.randint(1,100)
         attempts=15
     #print('The number is', myNumber) #For testing the code
@@ -51,7 +51,12 @@ while(RunGame):
         else:
             GameOn=True
         print('You have ',attempts,' attempts left. Good luck!')
-        userGuess=input('Guess the number: ')
+        if Gamemode==1:
+            userGuess=input('Guess a number from 1-10: ')
+        elif Gamemode==2:
+            userGuess=input('Guess a number from 1-50: ')
+        elif Gamemode==3:
+            userGuess=input('Guess a number from 1-100: ')
         if str.isnumeric(userGuess):
             if int(myNumber) == int(userGuess):
                 print('Correct!')
