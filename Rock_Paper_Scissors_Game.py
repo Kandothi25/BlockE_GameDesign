@@ -20,13 +20,23 @@ def Menu():
     print(' {                                          }')
     print('<[]========================================[]>')
     print('')
+    print('       /+[]=======================[]+\ ')
+    print('   ---<=+[]   type "r" for rock   []+=>---')
+    print('       \+[]=======================[]+/')
+    print('')
+    print('       /+[]=======================[]+\ ')
+    print('   ---<=+[]   type "p" for paper  []+=>---')
+    print('       \+[]=======================[]+/')
+    print('')
+    print('       /+[]=======================[]+\ ')
+    print('   ---<=+[] type "s" for scissors []+=>---')
+    print('       \+[]=======================[]+/')
 RunGame=True
 while(RunGame):
     Menu()
-    print("Let's play rock paper scissors! \ntype \"r\" for rock \"p\" for paper and \"s\" for scissors")
     Choice=True
     while(Choice):
-        user=input('Enter your choice: ')
+        user=input('\nEnter your choice: ')
         if user.lower()=='r':
             user=int(1)
             print('Rock!')
