@@ -10,7 +10,7 @@
 #if 'p' in user:
     #print('Paper!')
 
-import os, random
+import os, random, time
 os.system('cls')
 
 def Menu():
@@ -31,6 +31,8 @@ def Menu():
     print('       /+[]=======================[]+\ ')
     print('   ---<=+[] type "s" for scissors []+=>---')
     print('       \+[]=======================[]+/')
+UserScore=0
+CompScore=0
 RunGame=True
 while(RunGame):
     Menu()
@@ -40,47 +42,70 @@ while(RunGame):
         if user.lower()=='r':
             user=int(1)
             print('Rock!')
+            time.sleep(1)
             Choice=False
         elif user.lower()=='p':
             user=int(2)
             print('Paper!')
+            time.sleep(1)
             Choice=False
         elif user.lower()=='s':
             user=int(3)
             print('Scissors!')
+            time.sleep(1)
             Choice=False
         else:
             print('Not an option.')
     print("Computer's choice:")
+    time.sleep(1)
     computer=random.randint(1,3)
     if computer==1:
         print('Rock!')
+        time.sleep(1)
     elif computer==2:
         print('Paper!')
+        time.sleep(1)
     elif computer==3:
         print('Scissors!')
+        time.sleep(1)
     print('')
     if user==1:
         if computer==1:
             print("It's a tie!")
+            time.sleep(2)
         elif computer==2:
             print('You lose!')
+            time.sleep(2)
+            CompScore=CompScore+1
         elif computer==3:
             print('You win!')
+            time.sleep(2)
+            UserScore=UserScore+1
     elif user==2:
         if computer==1:
             print('You win!')
+            time.sleep(2)
+            UserScore=UserScore+1
         elif computer==2:
             print("It's a tie!")
+            time.sleep(2)
         elif computer==3:
             print('You lose!')
+            time.sleep(2)
+            CompScore=CompScore+1
     elif user==3:
         if computer==1:
             print('You lose!')
+            time.sleep(2)
+            CompScore=CompScore+1
         elif computer==2:
             print('You win!')
+            time.sleep(2)
+            UserScore=UserScore+1
         elif computer==3:
             print("It's a tie!")
+            time.sleep(2)
+    print('Score: ', UserScore, '-', CompScore)
     print('Would you like to play again? Type \"yes\" or \"no\"')
     PlayAgain=True
     while(PlayAgain):
