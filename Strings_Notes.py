@@ -3,7 +3,6 @@
 #Strings are arrays of characters
 #Has many functions
 import os, time
-from sre_parse import State
 os.system('cls')
 myName='Ishaan Kandoth'
 #or
