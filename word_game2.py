@@ -1,7 +1,6 @@
 #Ishaan Kandoth
 #2/8/22
 #Word guessing game
-from itertools import count
 import os, random
 os.system('cls')
 #Create a list for the computer to choose from
