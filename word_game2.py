@@ -46,7 +46,7 @@ def selectWord():
     global word
     fruits=['bananna', 'grape', 'mango', 'orange', 'watermelon', 'apple', 'strawberry']
     Animals=['monkey', 'shark', 'pig', 'dog', 'cat', 'horse', 'fish', 'bird', 'chicken']
-    ComputerParts=['moniter', 'keyboard', 'mouse', 'trackpad', 'motherboard', 'processor']
+    ComputerParts=['monitor', 'keyboard', 'mouse', 'trackpad', 'motherboard', 'processor']
 
     # size=len(fruits)
     # randy=random.randint(0,size)
@@ -99,6 +99,9 @@ def PlayGame():
             print('restarting...')
             PlayAgain=False
         elif restart.lower()==str('no'):
+            PlayAgain=False
+            RunGame=False
+        elif restart.lower()==str('nein'):
             PlayAgain=False
             RunGame=False
         else:
