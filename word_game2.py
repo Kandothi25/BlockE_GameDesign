@@ -1,7 +1,7 @@
 #Ishaan Kandoth
 #2/8/22
 #Word guessing game
-import os, random
+import os, random, time
 os.system('cls')
 #Create a list for the computer to choose from
 #3 different lists for the different categories
@@ -46,7 +46,7 @@ def selectWord():
     global word
     fruits=['bananna', 'grape', 'mango', 'orange', 'watermelon', 'apple', 'strawberry']
     Animals=['monkey', 'shark', 'pig', 'dog', 'cat', 'horse', 'fish', 'bird', 'chicken']
-    ComputerParts=['moniter', 'keyboard', 'mouse', 'trackpad', ]
+    ComputerParts=['moniter', 'keyboard', 'mouse', 'trackpad', 'motherboard', 'processor']
 
     # size=len(fruits)
     # randy=random.randint(0,size)
@@ -66,12 +66,15 @@ def selectWord():
     if Gamemode==1:
         word=random.choice(fruits)
         print('Fruits!')
+        time.sleep(1)
     elif Gamemode==2:
         word=random.choice(Animals)
         print('Animals!')
+        time.sleep(1)
     elif Gamemode==3:
         word=random.choice(ComputerParts)
         print('Computer Parts!')
+        time.sleep(1)
 
 def GuessFunction():
     global guess
@@ -101,6 +104,8 @@ def PlayGame():
         else:
             print('That was not an option. Please type \"yes\" or \"no\"')
 
+HighScore=0
+Score=0
 RunGame=True
 while RunGame:
     Menu()
@@ -128,11 +133,22 @@ while RunGame:
         if attempts==5:
             print('\nSorry, out of attempts')
             gameOn=False
-            #Playgame() ask if the user wants to play again
+            time.sleep(1)
         if countletter == len(word):
             print('\nyou guessed it!')
             gameOn=False
+            time.sleep(1)
     print('The word was', word)
+    Score=len(word)*5-attempts*2
+    if Score > HighScore:
+        HighScore=Score
+        print('New High Score:', HighScore)
+        time.sleep(1)
+    else:
+        print('Score:', Score)
+        time.sleep(1)
     PlayGame()
+    time.sleep(1)
 os.system('cls')
 print('Game Over')
+print('High Score:', HighScore)
