@@ -63,6 +63,7 @@ def selectWord():
                 print('Sorry, not an option, please enter \"1\", \"2\" or \"3\" only')
         except ValueError: 
             print('Sorry, not an option, please enter \"1\", \"2\" or \"3\" only')
+    os.system('cls')
     if Gamemode==1:
         word=random.choice(fruits)
         print('Fruits!')
@@ -88,6 +89,7 @@ def GuessFunction():
                 print('Only one letter please')
         except ValueError:
             print('Only one letter please')
+    os.system('cls')
 
 def PlayGame():
     global RunGame
@@ -120,7 +122,6 @@ while RunGame:
 
     gameOn=True
     while gameOn:
-
         GuessFunction()
         letterGuessed += guess #+= means letterGuessed = letterGuessed + guess
         if guess not in word:
@@ -153,5 +154,9 @@ while RunGame:
     PlayGame()
     time.sleep(1)
 os.system('cls')
-print('Game Over')
-print('High Score:', HighScore)
+print('<[]========================================[]>')
+print(' {                                          }')
+print(' {                 Game Over                }')
+print(' {                                          }')
+print('<[]========================================[]>')
+print('\nHigh Score:', HighScore, '\n')
