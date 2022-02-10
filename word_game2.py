@@ -119,7 +119,7 @@ while RunGame:
     word=""
     guess=""
     selectWord()
-
+    print(len(word),'letter word')
     gameOn=True
     while gameOn:
         GuessFunction()
