@@ -58,7 +58,7 @@ def selectWord():
     global word
     global HighScore
     global RunGame
-    fruits=['bananna', 'grape', 'mango', 'orange', 'watermelon', 'apple', 'strawberry']
+    fruits=['banana', 'grape', 'mango', 'orange', 'watermelon', 'apple', 'strawberry']
     Animals=['monkey', 'shark', 'pig', 'dog', 'cat', 'horse', 'fish', 'bird', 'chicken']
     ComputerParts=['monitor', 'keyboard', 'mouse', 'trackpad', 'motherboard', 'processor']
 
@@ -78,11 +78,19 @@ def selectWord():
             else:
                 if Gamemode==4:
                     print('Your highscore is:', HighScore)
+                    time.sleep(2)
+                    os.system('cls')
+                    Menu()
                 else:
                     print('Sorry, not an option, please enter "1", "2", "3", "4" or "5" only')
+                    time.sleep(3)
+                    os.system('cls')
+                    Menu()
         except ValueError: 
             print('Sorry, not an option, please enter "1", "2", "3", "4" or "5" only')
-
+            time.sleep(3)
+            os.system('cls')
+            Menu()
     os.system('cls')
     if Gamemode==1:
         word=random.choice(fruits)
@@ -114,23 +122,20 @@ def GuessFunction():
             print('Only one letter please')
     os.system('cls')
 
-def PlayGame():
-    global RunGame
-    print('Would you like to play again? Type \"yes\" or \"no\"')
-    PlayAgain=True
-    while(PlayAgain):
-        restart=input('')
-        if restart.lower()==str('yes'):
-            print('restarting...')
-            PlayAgain=False
-        elif restart.lower()==str('no'):
-            PlayAgain=False
-            RunGame=False
-        elif restart.lower()==str('nein'):
-            PlayAgain=False
-            RunGame=False
-        else:
-            print('That was not an option. Please type \"yes\" or \"no\"')
+# def PlayGame():
+#     global RunGame
+#     print('Would you like to play again? Type \"yes\" or \"no\"')
+#     PlayAgain=True
+#     while(PlayAgain):
+#         restart=input('')
+#         if restart.lower()==str('yes'):
+#             print('restarting...')
+#             PlayAgain=False
+#         elif restart.lower()==str('no'):
+#             PlayAgain=False
+#             RunGame=False
+#         else:
+#             print('That was not an option. Please type \"yes\" or \"no\"')
 
 while RunGame:
     Menu()
@@ -169,11 +174,11 @@ while RunGame:
         if Score > HighScore:
             HighScore=Score
             print('New High Score:', HighScore)
-            time.sleep(1)
+            time.sleep(3)
             os.system('cls')
         else:
             print('Score:', Score)
-            time.sleep(1)
+            time.sleep(3)
             os.system('cls')
 os.system('cls')
 print('<[]========================================[]>')
