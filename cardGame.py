@@ -12,7 +12,7 @@ numberCards.insert(0,'A') #Adding the ace to the deck
 numberCards.extend(royals) #Adding royals to the deck (extend instead of append so it isn't list)
 #Make a combined list for all cards [A♠,A♦,A♣,A♥,2♠,2♦,2♣,2♥,...J,Q,K, etc...]
 finalDeck=[]
-def Deck(cardnumber): #the function to add suits to each of the numbers
+def Deck(cardnumber): #the function to add suits to numbers, cardnumber parameter for different cards
     global suits
     global numberCards
     global finalDeck
