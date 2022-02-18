@@ -22,4 +22,4 @@ def Deck(cardnumber): #the function to add suits to numbers, cardnumber paramete
     suits=['♠', '♦', '♣', '♥'] #The suits list is reset so it can be added to the next number
 for l in range(0,13):
     Deck(l) #The function is called for each item in the list, the final deck is created
-print('Deck of Cards:\n\n'+str(finalDeck))
+print('Deck of Cards:\n\n'+str(finalDeck), '\n\n'+str(len(finalDeck)), 'cards\n')
