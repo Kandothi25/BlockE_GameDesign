@@ -30,7 +30,7 @@ def CreateDeck():
             deck.append(card)
             #this adds the information to the "full deck" we want to make
     #you can print the deck here, if you want to see how it looks
-
+CreateDeck()
 #now let's see the deck!
 def printingDeck():
     global row
@@ -42,7 +42,7 @@ def printingDeck():
             print(deck[counter], end=" ")
             counter +=1
         print()
-
+printingDeck()
 #now let's shuffle our deck!
 #Shuffle the deck cards
 player1=[]
@@ -58,7 +58,7 @@ def shuffleAndAssign():
             player1.append(deck[l])
         else:
             player2.append(deck[l])
-
+shuffleAndAssign()
 
 def SplitDeck():
     global halfDeck
@@ -70,7 +70,7 @@ def SplitDeck():
     halfDeck=int(len(deck)/2)
     plyr1=0
     plyr2=0
-
+SplitDeck()
     #ask user to hit a key to release cards
 
 tempPlayer1=[]
@@ -89,47 +89,25 @@ def PlayGame():
     global plyr2
     global player1
     global player2
-    global GameOn
-#while GameOn:
-    CreateDeck()
-    printingDeck()
-    shuffleAndAssign()
-    SplitDeck()
     for i in range (0,halfDeck):
         click=input("Press a any key to get cards: ")
         os.system('cls')
-        if len(player1)>0 or len(player2)>0:
-            print("Player 1     Player 2")
-            print("     "+player1[i]+"      "+player2[i])
-            if player1[i]>player2[i]:
-                plyr1 +=1
-                TemporaryDecks(tempPlayer1,i)
-            elif player1[i]<player2[i]:
-                plyr2 +=1
-                TemporaryDecks(tempPlayer2,i)
-            else:
-                print('tie')
+        print("Player 1     Player 2")
+        print("     "+player1[i]+"      "+player2[i])
+        if player1[i]>player2[i]:
+            plyr1 +=1
+            TemporaryDecks(tempPlayer1,i)
+        elif player1[i]<player2[i]:
+            plyr2 +=1
+            TemporaryDecks(tempPlayer2,i)
         else:
-            print('Would you like to play again? Type \"yes\" or \"no\"')
-            PlayAgain=True
-            while(PlayAgain):
-                restart=input('')
-                if restart.lower()==str('yes'):
-                    print('restarting...')
-                    PlayAgain=False
-                elif restart.lower()==str('no'):
-                    PlayAgain=False
-                    GameOn=False
-                else:
-                    print('That was not an option. Please type \"yes\" or \"no\"')
+            print('tie')
         print("Player I: "+str(plyr1)+"     Player II: "+ str(plyr2))
+
     if plyr1>plyr2:
         print("Player one won the game "+str(plyr1)+" to "+str(plyr2))
     elif plyr2>plyr1:
         print("Player two won the game "+str(plyr2)+" to "+str(plyr1))
     else:
         print('Its a tie!')
-
-GameOn = True
 PlayGame()
-print('Game Over')
