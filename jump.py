@@ -1,19 +1,17 @@
-import os, pygame,time
+import os, pygame
 os.system('cls')
 pygame.init()
 WIDTH=500
 HEIGHT=500
 check=True
 x=0
-y=470
-wbox=30
-hbox=30
-s_wbox=30
-s_hbox=10
-move=1
+y=450
+wbox=50
+hbox=50
+move=15
 jump_move=10
+jumping=False
 square=pygame.Rect(x,y,wbox,hbox)
-s_square=pygame.Rect(x,y,wbox,hbox)
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption('Jump')
 colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
@@ -21,7 +19,6 @@ colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255
 'black':[0,0,0],'white':[255,255,255]}
 background=colors.get('black')
 sq_color=colors.get('cyan')
-shadow_color=colors.get('blue')
 while check:
     screen.fill(background)
     for i in pygame.event.get():
@@ -30,48 +27,18 @@ while check:
     keys=pygame.key.get_pressed() #this returns a list
     if keys[pygame.K_a] and square.x>=move:
         square.x-=move
-    if keys[pygame.K_d] and square.x<=WIDTH-hbox:
+    if keys[pygame.K_d] and square.x<=440:
         square.x+=move
-    if keys[pygame.K_SPACE] and square.y>=jump_move:
+    
+    if jumping is False and keys[pygame.K_SPACE]:
+        jumping = True
+    if jumping is True:
         square.y-=jump_move
-        s_square.y-=jump_move
-        pygame.draw.rect(screen, sq_color, square)
-        pygame.display.update()
-        pygame.time.delay(50)
-        pygame.draw.rect(screen, shadow_color, s_square)
-        pygame.display.update()
-        square.y-=jump_move
-        s_square.y-=jump_move
-        pygame.draw.rect(screen, sq_color, square)
-        pygame.display.update()
-        pygame.time.delay(50)
-        pygame.draw.rect(screen, shadow_color, s_square)
-        pygame.display.update()
-        square.y-=jump_move
-        s_square.y-=jump_move
-        pygame.draw.rect(screen, sq_color, square)
-        pygame.display.update()
-        pygame.time.delay(50)
-        pygame.draw.rect(screen, shadow_color, s_square)
-        pygame.display.update()
-        square.y+=jump_move
-        s_square.y-=jump_move
-        pygame.draw.rect(screen, sq_color, square)
-        pygame.display.update()
-        pygame.time.delay(50)
-        pygame.draw.rect(screen, shadow_color, s_square)
-        pygame.display.update()
-        square.y+=jump_move
-        s_square.y-=jump_move
-        pygame.draw.rect(screen, sq_color, square)
-        pygame.display.update()
-        pygame.time.delay(50)
-        pygame.draw.rect(screen, shadow_color, s_square)
-        pygame.display.update()
-        square.y+=jump_move
-        s_square.y-=jump_move
-        pygame.draw.rect(screen, sq_color, square)
-        pygame.display.update()
+        jump_move-=1
+        if jump_move< -10:
+            jumping=False
+            jump_move=10
+    
     pygame.draw.rect(screen, sq_color, square)
+    pygame.time.delay(20)
     pygame.display.update()
-    pygame.time.delay(1)
