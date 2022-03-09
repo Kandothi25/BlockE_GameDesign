@@ -40,5 +40,5 @@ while check:
             jump_move=10
     
     pygame.draw.rect(screen, sq_color, square)
-    pygame.time.delay(20)
+    pygame.time.delay(15)
     pygame.display.update()
