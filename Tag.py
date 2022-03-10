@@ -31,10 +31,10 @@ yc=random.randint(rad,HEIGHT-rad)
 square=pygame.Rect(xs,ys,wbox,hbox)
 
 #circle hitbox
-c_wbox=rad
-c_hbox=rad
-xh=xc-(rad/2)
-yh=yc-(rad/2)
+c_wbox=20
+c_hbox=20
+xh=xc-(rad/1.5)
+yh=yc-(rad/1.5)
 hitbox=pygame.Rect(xh,yh,c_wbox,c_hbox)
 #creating screen
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
@@ -49,7 +49,7 @@ colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255
 background=colors.get('black')
 sq_color=colors.get('red')
 cr_color=colors.get('blue')
-hb_color=colors.get('blue')
+hb_color=colors.get('white')
 
 while check:
     screen.fill(background)
@@ -60,11 +60,11 @@ while check:
     #movement for square
     if keys[pygame.K_LEFT] and square.x>=move:
         square.x-=move
-    if keys[pygame.K_RIGHT] and square.x<=WIDTH-hbox:
+    if keys[pygame.K_RIGHT] and square.x<=WIDTH-(wbox+move):
         square.x+=move
     if keys[pygame.K_UP] and square.y>=move:
         square.y-=move
-    if keys[pygame.K_DOWN] and square.y<=HEIGHT-wbox:
+    if keys[pygame.K_DOWN] and square.y<=HEIGHT-(hbox+move):
         square.y+=move
     #movement for circle
     if keys[pygame.K_a] and xc>=move:
@@ -85,10 +85,10 @@ while check:
         ys=random.randint(0,HEIGHT-hbox)
         square=pygame.Rect(xs,ys,wbox,hbox)
         rad+=10
-        c_wbox+=10
-        c_hbox+=10
-        xh=xc-(rad/2)
-        yh=yc-(rad/2)
+        c_wbox+=13.5
+        c_hbox+=13.5
+        xh=xc-(rad/1.5)
+        yh=yc-(rad/1.5)
         hitbox=pygame.Rect(xh,yh,c_wbox,c_hbox)
 
     #Finish circle

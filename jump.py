@@ -30,9 +30,9 @@ while check:
     if keys[pygame.K_d] and square.x<=440:
         square.x+=move
     
-    if jumping is False and keys[pygame.K_SPACE]:
+    if jumping==False and keys[pygame.K_SPACE]:
         jumping = True
-    if jumping is True:
+    if jumping:
         square.y-=jump_move
         jump_move-=1
         if jump_move< -10:
