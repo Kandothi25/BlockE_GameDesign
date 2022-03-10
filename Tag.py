@@ -49,7 +49,7 @@ colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255
 background=colors.get('black')
 sq_color=colors.get('red')
 cr_color=colors.get('blue')
-hb_color=colors.get('white')
+hb_color=colors.get('blue')
 
 while check:
     screen.fill(background)
