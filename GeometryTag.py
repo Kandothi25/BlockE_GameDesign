@@ -4,7 +4,6 @@
 #use keys to move objects
 #use dictionaries
 import os, random, pygame
-from pickle import TRUE
 #Objective is for rectangle to run away from circle
 #If they colide, circle eats the rectangle and gets larger
 #Rectangle restarts
@@ -49,6 +48,8 @@ randColor=random.choice(list(colors))
 
 #Get colors
 background=colors.get('black')
+cr_color=colors.get('white')
+hb_color=colors.get('white')
 #Giving the square a random color
 def ChangeColor():
     global randColor
@@ -57,12 +58,14 @@ def ChangeColor():
         randColor=random.choice(list(colors))
         if randColor==background:
             randColor=random.choice(list(colors))
+        elif randColor=='black':
+            randColor=random.choice(list(colors))
+        elif randColor=='white':
+            randColor=random.choice(list(colors))
         else:
             ColorCheck=False
 ChangeColor()
 sq_color=colors.get(randColor)
-cr_color=colors.get('white')
-hb_color=colors.get('white')
 
 while check:
     screen.fill(background)
@@ -97,6 +100,7 @@ while check:
         xs=random.randint(0,WIDTH-wbox)
         ys=random.randint(0,HEIGHT-hbox)
         ChangeColor()
+        sq_color=colors.get(randColor)
         square=pygame.Rect(xs,ys,wbox,hbox)
         rad+=10
         c_wbox+=13.5
