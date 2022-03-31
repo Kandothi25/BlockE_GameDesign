@@ -3,11 +3,12 @@
 #draw circles and rectangles
 #use keys to move objects
 #use dictionaries
-import os, random, pygame
+import os, random, pygame, datetime
 #Objective is for rectangle to run away from circle
 #If they colide, circle eats the rectangle and gets larger
 #Rectangle restarts
 os.system('cls')
+name=input('Enter your name: ')
 #Initialize pygame
 pygame.init()
 #Declare constants, lists, variables, dictionaries, any object
@@ -23,7 +24,8 @@ SETT=False
 LEV_I=False
 LEV_II=False
 LEV_III=False
-
+SCOREBOARD=False
+EXIT=False
 #square variables
 xs=20
 ys=20
@@ -138,20 +140,39 @@ def instScreen():
             screen.blit(play,(125,600))
         pygame.display.update()
         pygame.time.delay(1)
+def keepScore(score):
+    date=datetime.datetime.now()
+    scoreLine=str(score)+'\t'+name+'\t'+date.strftime('%m/%d/%Y'+'\n')
+    #open a file and write
+    #when you write it erases the previous text
+    myFile=open('ClassStuff\score.txt','a')
+    myFile.write(scoreLine)
+    myFile.close()
 
-# TitleMenu('MENU')
-# MainMenu(MenuList)
-# pygame.time.delay(999)
-# instScreen()
 while check:
     if MAIN:
         screen.fill(background)
         TitleMenu("MENU")
         MainMenu(MenuList)
     if INST:
+        TitleMenu("INSTRUCTIONS")
         instScreen()
     if SETT:
+        TitleMenu("SETTINGS")
         MainMenu(SettingList)
+    if LEV_I:
+        TitleMenu("LEVEL 1")
+        print('Nothing to see here...')
+    if LEV_II:
+        TitleMenu("LEVEL 2")
+        print('Nothing to see here...')
+    if LEV_III:
+        TitleMenu("LEVEL 3")
+        print('Nothing to see here...')
+    if SCOREBOARD:
+        TitleMenu("SCOREBOARD")
+        print('[SCOREBOARD] Coming Soon...')
+
     for case in pygame.event.get():
         if case.type==pygame.QUIT:
             check=False
@@ -159,26 +180,39 @@ while check:
     if case.type ==pygame.MOUSEBUTTONDOWN:
         mouse_pos=pygame.mouse.get_pos()
         print(mouse_pos)
-        if ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >250 and mouse_pos[1] <290))or INST :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >250 and mouse_pos[1] <290))or INST :
             MAIN=False
-            screen.fill(background)
-            TitleMenu("INSTRUCTIONS")
             INST=True
-        if ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >300 and mouse_pos[1] <340))or SETT :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >300 and mouse_pos[1] <340))or SETT :
             MAIN=False
-            screen.fill(background)
-            TitleMenu("SETTINGS")
             SETT=True
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >350 and mouse_pos[1] <390))or LEV_I :
+            MAIN=False
+            LEV_I=True
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >400 and mouse_pos[1] <440))or LEV_II :
+            MAIN=False
+            LEV_II=True
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >450 and mouse_pos[1] <490))or LEV_III :
+            MAIN=False
+            LEV_III=True
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >500 and mouse_pos[1] <540))or SCOREBOARD :
+            MAIN=False
+            SCOREBOARD=True
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >550 and mouse_pos[1] <590))or EXIT :
+            MAIN=False
+            EXIT=True
+
     if keys[pygame.K_ESCAPE]:
             INST=False
             SETT=False
+            LEV_I=False
+            LEV_II=False
+            LEV_III=False
+            SCOREBOARD=False
+            EXIT=False
             MAIN=True
 
     # screen.fill(background)
-    # TitleMenu('Geometry Tag')
-    # MainMenu(MenuList)
-    # pygame.time.delay(999)
-    # instScreen()
     # for case in pygame.event.get():
     #     if case.type==pygame.QUIT:
     #         check=False
