@@ -17,8 +17,11 @@ pygame.init()
 WIDTH=700
 HEIGHT=700
 check=True #for the while loop
+playGame=True #for the game loop
 move=1
+rad=15
 MAIN=True
+GAME=False
 INST=False
 SETT=False
 LEV_I=False
@@ -26,36 +29,17 @@ LEV_II=False
 LEV_III=False
 SCOREBOARD=False
 EXIT=False
-#square variables
-xs=20
-ys=20
-wbox=30
-hbox=30
-
-#circle variables
-rad=15
-xc=random.randint(rad,WIDTH-rad)
-yc=random.randint(rad,HEIGHT-rad)
-#creating square
-square=pygame.Rect(xs,ys,wbox,hbox)
+#creating screen
+screen=pygame.display.set_mode((WIDTH,HEIGHT))
+pygame.display.set_caption('Tag')
 
 #Menu variables
 wb_btn=30
 hb_btn=30
 xs_btn=50
 ys_btn=250
-MenuList=['Instruction','Setting','Level 1','Level 2','Level 3','Scoreboard','Exit']
+MenuList=['Play','Instruction','Setting','Level 1','Level 2','Level 3','Scoreboard','Exit']
 SettingList=['Screen Size','Sound','Music']
-
-#circle hitbox
-c_wbox=20
-c_hbox=20
-xh=xc-(rad/1.5)
-yh=yc-(rad/1.5)
-hitbox=pygame.Rect(xh,yh,c_wbox,c_hbox)
-#creating screen
-screen=pygame.display.set_mode((WIDTH,HEIGHT))
-pygame.display.set_caption('Tag')
 
 #define colors
 colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
@@ -80,6 +64,80 @@ def ChangeColor():
             ColorCheck=False
 ChangeColor()
 sq_color=colors.get(randColor)
+
+def Game():
+    global screen
+    global move
+    global check
+    global playGame
+    global sq_color
+    #square variables
+    xs=20
+    ys=20
+    wbox=30
+    hbox=30
+
+    #circle variables
+    rad=15
+    xc=random.randint(rad,WIDTH-rad)
+    yc=random.randint(rad,HEIGHT-rad)
+    #creating square
+    square=pygame.Rect(xs,ys,wbox,hbox)
+
+    #circle hitbox
+    c_wbox=20
+    c_hbox=20
+    xh=xc-(rad/1.5)
+    yh=yc-(rad/1.5)
+    hitbox=pygame.Rect(xh,yh,c_wbox,c_hbox)
+    playGame=True
+    while playGame:
+        screen.fill(background)
+        keys=pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            playGame=False
+        #movement for square
+        if keys[pygame.K_LEFT] and square.x>=move:
+            square.x-=move
+        if keys[pygame.K_RIGHT] and square.x<=WIDTH-(wbox+move):
+            square.x+=move
+        if keys[pygame.K_UP] and square.y>=move:
+            square.y-=move
+        if keys[pygame.K_DOWN] and square.y<=HEIGHT-(hbox+move):
+            square.y+=move
+        #movement for circle
+        if keys[pygame.K_a] and xc>=move:
+            xc-=move
+            hitbox.x-=move
+        if keys[pygame.K_d] and xc<=WIDTH-move:
+            xc+=move
+            hitbox.x+=move
+        if keys[pygame.K_w] and yc>=move:
+            yc-=move
+            hitbox.y-=move
+        if keys[pygame.K_s] and yc<=HEIGHT-move:
+            yc+=move
+            hitbox.y+=move
+        #collisions
+        if square.colliderect(hitbox):
+            xs=random.randint(0,WIDTH-wbox)
+            ys=random.randint(0,HEIGHT-hbox)
+            ChangeColor()
+            sq_color=colors.get(randColor)
+            square=pygame.Rect(xs,ys,wbox,hbox)
+            rad+=10
+            c_wbox+=13.5
+            c_hbox+=13.5
+            xh=xc-(rad/1.5)
+            yh=yc-(rad/1.5)
+            hitbox=pygame.Rect(xh,yh,c_wbox,c_hbox)
+
+        #Finish circle
+        pygame.draw.rect(screen, sq_color, square)
+        pygame.draw.circle(screen, cr_color, (xc,yc), rad)
+        pygame.draw.rect(screen, hb_color, hitbox)
+        pygame.display.update()
+        pygame.time.delay(3)
 
 #Fonts
 TITLE_FNT=pygame.font.SysFont('comicsans',80)
@@ -116,7 +174,6 @@ inst2=INST_FNT.render('2) Move the square with arrow keys.',1,'white')
 inst3=INST_FNT.render('3) Move the circle with WASD keys.',1,'white')
 inst4=INST_FNT.render('4) The circle must eat the square and the square must escape.',1,'white')
 inst5=INST_FNT.render('5) When they collide, the circle grows and the square is teleported.',1,'white')
-play=MENU_FNT.render('Press [esc] to play',1,'white')
 
 #displaying instructions screen
 def instScreen():
@@ -137,7 +194,6 @@ def instScreen():
             screen.blit(inst3,(10,400))
             screen.blit(inst4,(10,450))
             screen.blit(inst5,(10,500))
-            screen.blit(play,(125,600))
         pygame.display.update()
         pygame.time.delay(1)
 def keepScore(score):
@@ -152,8 +208,10 @@ def keepScore(score):
 while check:
     if MAIN:
         screen.fill(background)
-        TitleMenu("MENU")
+        TitleMenu("Circle eats Square")
         MainMenu(MenuList)
+    if GAME:
+        Game()
     if INST:
         TitleMenu("INSTRUCTIONS")
         instScreen()
@@ -172,6 +230,8 @@ while check:
     if SCOREBOARD:
         TitleMenu("SCOREBOARD")
         print('[SCOREBOARD] Coming Soon...')
+    if EXIT:
+        TitleMenu("Game Over")
 
     for case in pygame.event.get():
         if case.type==pygame.QUIT:
@@ -180,29 +240,33 @@ while check:
     if case.type ==pygame.MOUSEBUTTONDOWN:
         mouse_pos=pygame.mouse.get_pos()
         print(mouse_pos)
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >250 and mouse_pos[1] <290))or INST :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >250 and mouse_pos[1] <290))or GAME:
+            MAIN=False
+            GAME=True
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >300 and mouse_pos[1] <340))or INST :
             MAIN=False
             INST=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >300 and mouse_pos[1] <340))or SETT :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >350 and mouse_pos[1] <390))or SETT :
             MAIN=False
             SETT=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >350 and mouse_pos[1] <390))or LEV_I :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >400 and mouse_pos[1] <440))or LEV_I :
             MAIN=False
             LEV_I=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >400 and mouse_pos[1] <440))or LEV_II :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >450 and mouse_pos[1] <490))or LEV_II :
             MAIN=False
             LEV_II=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >450 and mouse_pos[1] <490))or LEV_III :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >500 and mouse_pos[1] <540))or LEV_III :
             MAIN=False
             LEV_III=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >500 and mouse_pos[1] <540))or SCOREBOARD :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >550 and mouse_pos[1] <590))or SCOREBOARD :
             MAIN=False
             SCOREBOARD=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >550 and mouse_pos[1] <590))or EXIT :
+        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >600 and mouse_pos[1] <640))or EXIT :
             MAIN=False
             EXIT=True
 
     if keys[pygame.K_ESCAPE]:
+            GAME=False
             INST=False
             SETT=False
             LEV_I=False
