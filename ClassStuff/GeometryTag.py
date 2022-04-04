@@ -31,7 +31,7 @@ SCOREBOARD=False
 EXIT=False
 #creating screen
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
-pygame.display.set_caption('Tag')
+pygame.display.set_caption('Circle eats Square')
 
 #Menu variables
 wb_btn=30
@@ -39,7 +39,7 @@ hb_btn=30
 xs_btn=50
 ys_btn=250
 MenuList=['Play','Instruction','Setting','Level 1','Level 2','Level 3','Scoreboard','Exit']
-SettingList=['Screen Size','Sound','Music']
+SettingList=['Screen Size','Sound','Music','Circle Color']
 
 #define colors
 colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
@@ -66,11 +66,7 @@ ChangeColor()
 sq_color=colors.get(randColor)
 
 def Game():
-    global screen
-    global move
-    global check
-    global playGame
-    global sq_color
+    global screen, move, check, playGame, sq_color, GAME, MAIN, WIDTH, HEIGHT
     #square variables
     xs=20
     ys=20
@@ -96,6 +92,8 @@ def Game():
         keys=pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             playGame=False
+            GAME=False
+            MAIN=True
         #movement for square
         if keys[pygame.K_LEFT] and square.x>=move:
             square.x-=move
@@ -207,31 +205,46 @@ def keepScore(score):
 
 while check:
     if MAIN:
+        pygame.display.set_caption('Menu')
         screen.fill(background)
         TitleMenu("Circle eats Square")
         MainMenu(MenuList)
     if GAME:
+        pygame.display.set_caption('Circle eats Square')
         Game()
     if INST:
+        pygame.display.set_caption('Instructions')
         TitleMenu("INSTRUCTIONS")
         instScreen()
     if SETT:
+        pygame.display.set_caption('Settings')
         TitleMenu("SETTINGS")
         MainMenu(SettingList)
     if LEV_I:
+        pygame.display.set_caption('Level 1')
         TitleMenu("LEVEL 1")
-        print('Nothing to see here...')
     if LEV_II:
+        pygame.display.set_caption('Level 2')
         TitleMenu("LEVEL 2")
-        print('Nothing to see here...')
     if LEV_III:
+        pygame.display.set_caption('Level 3')
         TitleMenu("LEVEL 3")
-        print('Nothing to see here...')
     if SCOREBOARD:
+        pygame.display.set_caption('Scoreboard')
         TitleMenu("SCOREBOARD")
-        print('[SCOREBOARD] Coming Soon...')
+        myFile=open('ClassStuff\score.txt','r')
+        scoreboardLines=myFile.readlines()
+        textY=250
+        for i in range(len(scoreboardLines)):
+            newScoreLine=MENU_FNT.render(scoreboardLines[i],1,'white')
+            screen.blit(newScoreLine,(90,textY))
+            textY+=50
+        pygame.display.update()
+
     if EXIT:
         TitleMenu("Game Over")
+        gameScore=rad*5
+        keepScore(gameScore)
 
     for case in pygame.event.get():
         if case.type==pygame.QUIT:
@@ -322,4 +335,4 @@ while check:
     # pygame.draw.circle(screen, cr_color, (xc,yc), rad)
     # pygame.draw.rect(screen, hb_color, hitbox)
     pygame.display.update()
-    pygame.time.delay(3)
+    pygame.time.delay(1)
