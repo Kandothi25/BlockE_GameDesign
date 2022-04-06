@@ -39,7 +39,7 @@ hb_btn=30
 xs_btn=50
 ys_btn=250
 MenuList=['Play','Instruction','Setting','Level 1','Level 2','Level 3','Scoreboard','Exit']
-SettingList=['Screen Size','Sound','Music','Circle Color']
+SettingList=['Screen Size','Sound','Music','Circle Color','Movement Speed']
 
 #define colors
 colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
@@ -196,7 +196,7 @@ def instScreen():
         pygame.time.delay(1)
 def keepScore(score):
     date=datetime.datetime.now()
-    scoreLine=str(score)+'\t'+name+'\t'+date.strftime('%m/%d/%Y'+'\n')
+    scoreLine=str(score)+' '+name+' '+date.strftime('%m/%d/%Y'+'\n')
     #open a file and write
     #when you write it erases the previous text
     myFile=open('ClassStuff\score.txt','a')
@@ -237,14 +237,15 @@ while check:
         textY=250
         for i in range(len(scoreboardLines)):
             newScoreLine=MENU_FNT.render(scoreboardLines[i],1,'white')
-            screen.blit(newScoreLine,(90,textY))
+            textX=WIDTH/2-newScoreLine.get_width()/2
+            screen.blit(newScoreLine,(textX,textY))
             textY+=50
         pygame.display.update()
-
     if EXIT:
         TitleMenu("Game Over")
-        gameScore=rad*5
+        gameScore=rad-15
         keepScore(gameScore)
+        check=False
 
     for case in pygame.event.get():
         if case.type==pygame.QUIT:
