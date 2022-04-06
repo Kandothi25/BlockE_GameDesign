@@ -9,3 +9,4 @@ elif num2 < num1 and num2 < num3:
     print('The second number was the smallest one')
 elif num3 < num1 and num3 < num2:
     print('The third number was the smallest one')
+#C:\Users\kandothi25\.vscode\BlockE_GameDesign\ClassStuff\3numbers.py

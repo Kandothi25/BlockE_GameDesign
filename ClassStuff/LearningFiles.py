@@ -12,7 +12,7 @@ date=datetime.datetime.now()
 score=123
 name='Jesse'
 print(date.strftime('%m/%d/%Y'))
-scoreLine=str(score)+'\t'+name+'\t'+date.strftime('%m/%d/%Y'+'\n')
+scoreLine=str(score)+' '+name+' '+date.strftime('%m/%d/%Y'+'\n')
 print(scoreLine)
 #open a file and write
 #when you write it erases the previous text
@@ -23,7 +23,7 @@ myFile.close()
 score=345
 name='Jay'
 print(date.strftime('%m/%d/%Y'))
-scoreLine=str(score)+'\t'+name+'\t'+date.strftime('%m/%d/%Y'+'\n')
+scoreLine=str(score)+' '+name+' '+date.strftime('%m/%d/%Y'+'\n')
 myFile=open('ClassStuff\score.txt','a')
 myFile.write(scoreLine)
 myFile.close()
