@@ -50,11 +50,15 @@ MenuList=['Play','Instruction','Setting','Level 1','Level 2','Level 3','Scoreboa
 SettingList=['Screen Size','Sound','Music','Circle Color','Movement Speed']
 ScreenSizeList=['600 x 600','800 x 800','1000 x 1000']
 AudioList=['On','Off']
+ColorsMenuList1=['red','orange','yellow']
+ColorsMenuList2=['green','blue','purple']
+ColorsMenuList3=['cyan','magenta','white']
+MovementList=['Normal','Fast','Hyperspeed']
 
 #define colors
 colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
-'blue':[0,0,255],'cyan':[0,255,255],'purple':[128,0,128],'magenta':[255,0,255],
-'black':[0,0,0],'white':[255,255,255]}
+'blue':[0,0,255],'purple':[128,0,128],'cyan':[0,255,255],'magenta':[255,0,255],
+'white':[255,255,255],'black':[0,0,0]}
 randColor=random.choice(list(colors))
 
 #Get colors
@@ -106,8 +110,6 @@ def Game():
         keys=pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             playGame=False
-            GAME=False
-            MAIN=True
         #movement for square
         if keys[pygame.K_LEFT] and square.x>=move:
             square.x-=move
@@ -173,16 +175,100 @@ def TitleMenu(Message):
     screen.blit(text,(xt,50))
 square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
 
-def MainMenu(Mlist):
+def MainMenu(Mlist,xOption):
+    global xs_btn,ys_btn,wb_btn,hb_btn
+    xs_btn=50
     ty=250
-    square_button.y=250
+    xs_btn+=xOption
+    ys_btn=250
     for i in range(len(Mlist)):
         message=Mlist[i]
         text=INST_FNT.render(message,1,'green')
-        screen.blit(text,(90,ty))
+        screen.blit(text,(xs_btn+40,ty))
+        square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
         pygame.draw.rect(screen,sq_btn_color,square_button)
-        square_button.y+=50
+        ys_btn+=50
         ty+=50
+    pygame.display.update()
+    pygame.time.delay(1)
+
+def ColorMenu():
+    global xs_btn,ys_btn,wb_btn,hb_btn,cr_color,hb_color
+    xs_btn=50
+    ty=250
+    xs_btn+=40
+    ys_btn=250
+    for i in range(len(ColorsMenuList1)):
+        message=ColorsMenuList1[i]
+        text=INST_FNT.render(message,1,'white')
+        screen.blit(text,(xs_btn+40,ty))
+        square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
+        sq_btn_color=ColorsMenuList1[i]
+        pygame.draw.rect(screen,sq_btn_color,square_button)
+        ys_btn+=50
+        ty+=50
+    xs_btn=50
+    ty=250
+    xs_btn+=240
+    ys_btn=250
+    for i in range(len(ColorsMenuList2)):
+        message=ColorsMenuList2[i]
+        text=INST_FNT.render(message,1,'white')
+        screen.blit(text,(xs_btn+40,ty))
+        square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
+        sq_btn_color=ColorsMenuList2[i]
+        pygame.draw.rect(screen,sq_btn_color,square_button)
+        ys_btn+=50
+        ty+=50
+    xs_btn=50
+    ty=250
+    xs_btn+=440
+    ys_btn=250
+    for i in range(len(ColorsMenuList3)):
+        message=ColorsMenuList3[i]
+        text=INST_FNT.render(message,1,'white')
+        screen.blit(text,(xs_btn+40,ty))
+        square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
+        sq_btn_color=ColorsMenuList3[i]
+        pygame.draw.rect(screen,sq_btn_color,square_button)
+        ys_btn+=50
+        ty+=50
+    if ((xm>90 and xm<120) and (ym>250 and ym<290)):
+        cr_color=colors.get('red')
+        hb_color=colors.get('red')
+        ChangeColor()
+    if ((xm>90 and xm<120) and (ym>300 and ym<340)):
+        cr_color=colors.get('orange')
+        hb_color=colors.get('orange')
+        ChangeColor()
+    if ((xm>90 and xm<120) and (ym>350 and ym<390)):
+        cr_color=colors.get('yellow')
+        hb_color=colors.get('yellow')
+        ChangeColor()
+    if ((xm>290 and xm<320) and (ym>250 and ym<290)):
+        cr_color=colors.get('green')
+        hb_color=colors.get('green')
+        ChangeColor()
+    if ((xm>290 and xm<320) and (ym>300 and ym<340)):
+        cr_color=colors.get('blue')
+        hb_color=colors.get('blue')
+        ChangeColor()
+    if ((xm>290 and xm<320) and (ym>350 and ym<390)):
+        cr_color=colors.get('purple')
+        hb_color=colors.get('purple')
+        ChangeColor()
+    if ((xm>490 and xm<520) and (ym>250 and ym<290)):
+        cr_color=colors.get('cyan')
+        hb_color=colors.get('cyan')
+        ChangeColor()
+    if ((xm>490 and xm<520) and (ym>300 and ym<340)):
+        cr_color=colors.get('magenta')
+        hb_color=colors.get('magenta')
+        ChangeColor()
+    if ((xm>490 and xm<520) and (ym>350 and ym<390)):
+        cr_color=colors.get('white')
+        hb_color=colors.get('white')
+        ChangeColor()
     pygame.display.update()
     pygame.time.delay(1)
 
@@ -198,25 +284,14 @@ inst5=INST_FNT.render('5) When they collide, the circle grows and the square is 
 
 #displaying instructions screen
 def instScreen():
-    instr_Check=True
-    while instr_Check:
-        screen.fill(background)
-        for i in pygame.event.get():
-            if i.type==pygame.QUIT:
-                instr_Check=False
-        keys=pygame.key.get_pressed() #this returns a list
-        if keys[pygame.K_ESCAPE]:
-            instr_Check=False
-        else:
-            screen.blit(title,(xt,50))
-            screen.blit(Instructions,(200,200))
-            screen.blit(inst1,(10,300))
-            screen.blit(inst2,(10,350))
-            screen.blit(inst3,(10,400))
-            screen.blit(inst4,(10,450))
-            screen.blit(inst5,(10,500))
-        pygame.display.update()
-        pygame.time.delay(1)
+    screen.fill(background)
+    screen.blit(title,(xt,50))
+    screen.blit(Instructions,(200,200))
+    screen.blit(inst1,(10,300))
+    screen.blit(inst2,(10,350))
+    screen.blit(inst3,(10,400))
+    screen.blit(inst4,(10,450))
+    screen.blit(inst5,(10,500))
 def keepScore(score):
     date=datetime.datetime.now()
     scoreLine=str(score)+' '+name+' '+date.strftime('%m/%d/%Y'+'\n')
@@ -227,23 +302,31 @@ def keepScore(score):
     myFile.close()
 def screensizeChange():
     global HEIGHT, WIDTH, screen
-    if ((xm>20 and xm<80) and (ym>250 and ym<290)):
+    if ((xm>90 and xm<120) and (ym>250 and ym<290)):
         HEIGHT=600
         WIDTH=600
-    if ((xm>20 and xm<80) and (ym>300 and ym<340)):
+    if ((xm>90 and xm<120) and (ym>300 and ym<340)):
         HEIGHT=800
         WIDTH=800
-    if ((xm>20 and xm<80) and (ym>350 and ym<390)):
+    if ((xm>90 and xm<120) and (ym>350 and ym<390)):
         HEIGHT=1000
         WIDTH=1000
     screen=pygame.display.set_mode((WIDTH,HEIGHT))
+def movementChange():
+    global move
+    if ((xm>90 and xm<120) and (ym>250 and ym<290)):
+        move=5
+    if ((xm>90 and xm<120) and (ym>300 and ym<340)):
+        move=10
+    if ((xm>90 and xm<120) and (ym>350 and ym<390)):
+        move=20
 
 while check:
     if MAIN:
         pygame.display.set_caption('Menu')
         screen.fill(background)
         TitleMenu("Circle eats Square")
-        MainMenu(MenuList)
+        MainMenu(MenuList,0)
     if GAME:
         pygame.display.set_caption('Circle eats Square')
         ChangeColor()
@@ -261,45 +344,63 @@ while check:
     if SETT:
         pygame.display.set_caption('Settings')
         TitleMenu("SETTINGS")
-        MainMenu(SettingList)
+        MainMenu(SettingList,0)
         if keys[pygame.K_ESCAPE]:
             SETT=False
             MAIN=True
     if SC_SIZE:
         pygame.display.set_caption('Screen Size')
         TitleMenu("SCREEN SIZE")
-        MainMenu(ScreenSizeList)
+        MainMenu(ScreenSizeList,40)
         screensizeChange()
         pygame.display.update()
-        if keys[pygame.K_ESCAPE]:
+        if keys[pygame.K_e]:
             SC_SIZE=False
             SETT=True
+        if keys[pygame.K_ESCAPE]:
+            SC_SIZE=False
+            MAIN=True
     if SOUND:
         pygame.display.set_caption('Sound')
         TitleMenu("SOUND")
-        MainMenu(AudioList)
-        if keys[pygame.K_ESCAPE]:
+        MainMenu(AudioList,40)
+        if keys[pygame.K_e]:
             SOUND=False
             SETT=True
+        if keys[pygame.K_ESCAPE]:
+            SOUND=False
+            MAIN=True
     if MUSIC:
         pygame.display.set_caption('Music')
         TitleMenu("MUSIC")
-        MainMenu(AudioList)
-        if keys[pygame.K_ESCAPE]:
+        MainMenu(AudioList,40)
+        if keys[pygame.K_e]:
             MUSIC=False
             SETT=True
+        if keys[pygame.K_ESCAPE]:
+            MUSIC=False
+            MAIN=True
     if CIRCLE_CLR:
         pygame.display.set_caption('Circle Color')
         TitleMenu("CIRCLE COLOR")
-        if keys[pygame.K_ESCAPE]:
+        ColorMenu()
+        if keys[pygame.K_e]:
             CIRCLE_CLR=False
             SETT=True
+        if keys[pygame.K_ESCAPE]:
+            CIRCLE_CLR=False
+            MAIN=True
     if MOVEMENT:
         pygame.display.set_caption('Movement')
         TitleMenu("MOVEMENT")
-        if keys[pygame.K_ESCAPE]:
+        MainMenu(MovementList,40)
+        movementChange()
+        if keys[pygame.K_e]:
             MOVEMENT=False
             SETT=True
+        if keys[pygame.K_ESCAPE]:
+            MOVEMENT=False
+            MAIN=True
     if LEV_I:
         pygame.display.set_caption('Level 1')
         TitleMenu("LEVEL 1")
@@ -346,6 +447,8 @@ while check:
         mouse_pos=pygame.mouse.get_pos()
         xm=mouse_pos[0]
         ym=mouse_pos[1]
+        print(xm,ym)
+        os.system('cls')
         if MAIN and ((xm >20 and xm <80) and (ym >250 and ym <290))or GAME:
             MAIN=False
             GAME=True

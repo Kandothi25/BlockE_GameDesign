@@ -9,6 +9,7 @@ walkRight=[pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-T
 walkLeft=[pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L1.png'), pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L2.png'), pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L3.png'), pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L4.png'), pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L5.png'), pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L6.png'), pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L7.png'), pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L8.png'), pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\L9.png')]
 bg=pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\\bg.jpg')
 char=pygame.image.load('ClassStuff\images\Pygame-Tutorials-master\Pygame-Tutorials-master\Game\standing.png')
+spikes=pygame.image.load('ClassStuff\images\Sunfury_(projectile).png')
 
 x=50
 y=400
@@ -16,6 +17,8 @@ width=40
 height=60
 vel=5
 
+background1=True
+Falling=False
 clock=pygame.time.Clock()
 
 isJump=False
@@ -27,7 +30,9 @@ walkCount=0
 
 def redrawGameWindow():
     global walkCount
-    win.blit(bg,(0,0))  
+    win.blit(bg,(0,0))
+    if background1:
+        win.blit(spikes, (250,250))  
     if walkCount+1>=27:
         walkCount=0 
     if left:  
@@ -47,31 +52,40 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_a] and x > vel: 
-        x -= vel
-        left = True
-        right = False
-    elif keys[pygame.K_d] and x < 500 - vel - width:  
-        x += vel
-        left = False
-        right = True
-    else: 
-        left = False
-        right = False
-        walkCount = 0
-    if not(isJump):
-        if keys[pygame.K_SPACE]:
-            isJump = True
+    if 250<x<288 and 250<y<288:
+        Falling=True
+    if Falling:
+        while Falling:
+            if y<450:
+                y-=1
+            else:
+                win.blit()
+    else:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a] and x > vel: 
+            x -= vel
+            left = True
+            right = False
+        elif keys[pygame.K_d] and x < 500 - vel - width:  
+            x += vel
+            left = False
+            right = True
+        else: 
             left = False
             right = False
             walkCount = 0
-    else:
-        if jumpCount >= -10:
-            y -= (jumpCount * abs(jumpCount)) * 0.5
-            jumpCount -= 1
-        else: 
-            jumpCount = 10
-            isJump = False
+        if not(isJump):
+            if keys[pygame.K_SPACE]:
+                isJump = True
+                left = False
+                right = False
+                walkCount = 0
+        else:
+            if jumpCount >= -10:
+                y -= (jumpCount * abs(jumpCount)) * 0.5
+                jumpCount -= 1
+            else: 
+                jumpCount = 10
+                isJump = False
     redrawGameWindow() 
 pygame.quit()
