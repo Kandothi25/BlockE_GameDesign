@@ -18,8 +18,11 @@ WIDTH=700
 HEIGHT=700
 check=True #for the while loop
 playGame=True #for the game loop
-move=1
+move=5
+jump_move=10
+jumping=False
 rad=15
+gameScore=0
 MAIN=True
 GAME=False
 INST=False
@@ -29,6 +32,11 @@ LEV_II=False
 LEV_III=False
 SCOREBOARD=False
 EXIT=False
+SC_SIZE=False
+SOUND=False
+MUSIC=False
+CIRCLE_CLR=False
+MOVEMENT=False
 #creating screen
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption('Circle eats Square')
@@ -40,6 +48,8 @@ xs_btn=50
 ys_btn=250
 MenuList=['Play','Instruction','Setting','Level 1','Level 2','Level 3','Scoreboard','Exit']
 SettingList=['Screen Size','Sound','Music','Circle Color','Movement Speed']
+ScreenSizeList=['600 x 600','800 x 800','1000 x 1000']
+AudioList=['On','Off']
 
 #define colors
 colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
@@ -66,7 +76,8 @@ ChangeColor()
 sq_color=colors.get(randColor)
 
 def Game():
-    global screen, move, check, playGame, sq_color, GAME, MAIN, WIDTH, HEIGHT
+    global screen, move, check, playGame, sq_color, jump_move, jumping, gameScore, GAME, MAIN, WIDTH, HEIGHT
+    gameScore=0
     #square variables
     xs=20
     ys=20
@@ -89,6 +100,9 @@ def Game():
     playGame=True
     while playGame:
         screen.fill(background)
+        for case in pygame.event.get():
+            if case.type==pygame.QUIT:
+                check=False
         keys=pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             playGame=False
@@ -103,6 +117,14 @@ def Game():
             square.y-=move
         if keys[pygame.K_DOWN] and square.y<=HEIGHT-(hbox+move):
             square.y+=move
+        if jumping==False and keys[pygame.K_SPACE]:
+            jumping = True
+        if jumping:
+            square.y-=jump_move
+            jump_move-=1
+            if jump_move< -10:
+                jumping=False
+                jump_move=10
         #movement for circle
         if keys[pygame.K_a] and xc>=move:
             xc-=move
@@ -135,7 +157,8 @@ def Game():
         pygame.draw.circle(screen, cr_color, (xc,yc), rad)
         pygame.draw.rect(screen, hb_color, hitbox)
         pygame.display.update()
-        pygame.time.delay(3)
+        pygame.time.delay(10)
+    gameScore=rad-15
 
 #Fonts
 TITLE_FNT=pygame.font.SysFont('comicsans',80)
@@ -202,6 +225,18 @@ def keepScore(score):
     myFile=open('ClassStuff\score.txt','a')
     myFile.write(scoreLine)
     myFile.close()
+def screensizeChange():
+    global HEIGHT, WIDTH, screen
+    if ((xm>20 and xm<80) and (ym>250 and ym<290)):
+        HEIGHT=600
+        WIDTH=600
+    if ((xm>20 and xm<80) and (ym>300 and ym<340)):
+        HEIGHT=800
+        WIDTH=800
+    if ((xm>20 and xm<80) and (ym>350 and ym<390)):
+        HEIGHT=1000
+        WIDTH=1000
+    screen=pygame.display.set_mode((WIDTH,HEIGHT))
 
 while check:
     if MAIN:
@@ -211,24 +246,78 @@ while check:
         MainMenu(MenuList)
     if GAME:
         pygame.display.set_caption('Circle eats Square')
+        ChangeColor()
         Game()
+        if keys[pygame.K_ESCAPE]:
+            GAME=False
+            MAIN=True
     if INST:
         pygame.display.set_caption('Instructions')
         TitleMenu("INSTRUCTIONS")
         instScreen()
+        if keys[pygame.K_ESCAPE]:
+            INST=False
+            MAIN=True
     if SETT:
         pygame.display.set_caption('Settings')
         TitleMenu("SETTINGS")
         MainMenu(SettingList)
+        if keys[pygame.K_ESCAPE]:
+            SETT=False
+            MAIN=True
+    if SC_SIZE:
+        pygame.display.set_caption('Screen Size')
+        TitleMenu("SCREEN SIZE")
+        MainMenu(ScreenSizeList)
+        screensizeChange()
+        pygame.display.update()
+        if keys[pygame.K_ESCAPE]:
+            SC_SIZE=False
+            SETT=True
+    if SOUND:
+        pygame.display.set_caption('Sound')
+        TitleMenu("SOUND")
+        MainMenu(AudioList)
+        if keys[pygame.K_ESCAPE]:
+            SOUND=False
+            SETT=True
+    if MUSIC:
+        pygame.display.set_caption('Music')
+        TitleMenu("MUSIC")
+        MainMenu(AudioList)
+        if keys[pygame.K_ESCAPE]:
+            MUSIC=False
+            SETT=True
+    if CIRCLE_CLR:
+        pygame.display.set_caption('Circle Color')
+        TitleMenu("CIRCLE COLOR")
+        if keys[pygame.K_ESCAPE]:
+            CIRCLE_CLR=False
+            SETT=True
+    if MOVEMENT:
+        pygame.display.set_caption('Movement')
+        TitleMenu("MOVEMENT")
+        if keys[pygame.K_ESCAPE]:
+            MOVEMENT=False
+            SETT=True
     if LEV_I:
         pygame.display.set_caption('Level 1')
         TitleMenu("LEVEL 1")
+        if keys[pygame.K_ESCAPE]:
+            LEV_I=False
+            MAIN=True
     if LEV_II:
         pygame.display.set_caption('Level 2')
         TitleMenu("LEVEL 2")
+        if keys[pygame.K_ESCAPE]:
+            LEV_II=False
+            MAIN=True
     if LEV_III:
         pygame.display.set_caption('Level 3')
         TitleMenu("LEVEL 3")
+        if keys[pygame.K_ESCAPE]:
+            LEV_III=False
+            MAIN=True
     if SCOREBOARD:
         pygame.display.set_caption('Scoreboard')
         TitleMenu("SCOREBOARD")
@@ -241,9 +330,11 @@ while check:
             screen.blit(newScoreLine,(textX,textY))
             textY+=50
         pygame.display.update()
+        if keys[pygame.K_ESCAPE]:
+            SCOREBOARD=False
+            MAIN=True
     if EXIT:
         TitleMenu("Game Over")
-        gameScore=rad-15
         keepScore(gameScore)
         check=False
 
@@ -253,87 +344,47 @@ while check:
     keys=pygame.key.get_pressed() #this returns a list
     if case.type ==pygame.MOUSEBUTTONDOWN:
         mouse_pos=pygame.mouse.get_pos()
-        print(mouse_pos)
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >250 and mouse_pos[1] <290))or GAME:
+        xm=mouse_pos[0]
+        ym=mouse_pos[1]
+        if MAIN and ((xm >20 and xm <80) and (ym >250 and ym <290))or GAME:
             MAIN=False
             GAME=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >300 and mouse_pos[1] <340))or INST :
+        if MAIN and ((xm >20 and xm <80) and (ym >300 and ym <340))or INST :
             MAIN=False
             INST=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >350 and mouse_pos[1] <390))or SETT :
+        if MAIN and ((xm >20 and xm <80) and (ym >350 and ym <390))or SETT :
             MAIN=False
             SETT=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >400 and mouse_pos[1] <440))or LEV_I :
+        if MAIN and ((xm >20 and xm <80) and (ym >400 and ym <440))or LEV_I :
             MAIN=False
             LEV_I=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >450 and mouse_pos[1] <490))or LEV_II :
+        if MAIN and ((xm >20 and xm <80) and (ym >450 and ym <490))or LEV_II :
             MAIN=False
             LEV_II=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >500 and mouse_pos[1] <540))or LEV_III :
+        if MAIN and ((xm >20 and xm <80) and (ym >500 and ym <540))or LEV_III :
             MAIN=False
             LEV_III=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >550 and mouse_pos[1] <590))or SCOREBOARD :
+        if MAIN and ((xm >20 and xm <80) and (ym >550 and ym <590))or SCOREBOARD :
             MAIN=False
             SCOREBOARD=True
-        if MAIN and ((mouse_pos[0] >20 and mouse_pos[0] <80) and (mouse_pos[1] >600 and mouse_pos[1] <640))or EXIT :
+        if MAIN and ((xm >20 and xm <80) and (ym >600 and ym <640))or EXIT :
             MAIN=False
             EXIT=True
-
-    if keys[pygame.K_ESCAPE]:
-            GAME=False
-            INST=False
+        #settings menu
+        if SETT and ((xm >20 and xm <80) and (ym >250 and ym <290)):
             SETT=False
-            LEV_I=False
-            LEV_II=False
-            LEV_III=False
-            SCOREBOARD=False
-            EXIT=False
-            MAIN=True
-
-    # screen.fill(background)
-    # for case in pygame.event.get():
-    #     if case.type==pygame.QUIT:
-    #         check=False
-    # keys=pygame.key.get_pressed()
-    # #movement for square
-    # if keys[pygame.K_LEFT] and square.x>=move:
-    #     square.x-=move
-    # if keys[pygame.K_RIGHT] and square.x<=WIDTH-(wbox+move):
-    #     square.x+=move
-    # if keys[pygame.K_UP] and square.y>=move:
-    #     square.y-=move
-    # if keys[pygame.K_DOWN] and square.y<=HEIGHT-(hbox+move):
-    #     square.y+=move
-    # #movement for circle
-    # if keys[pygame.K_a] and xc>=move:
-    #     xc-=move
-    #     hitbox.x-=move
-    # if keys[pygame.K_d] and xc<=WIDTH-move:
-    #     xc+=move
-    #     hitbox.x+=move
-    # if keys[pygame.K_w] and yc>=move:
-    #     yc-=move
-    #     hitbox.y-=move
-    # if keys[pygame.K_s] and yc<=HEIGHT-move:
-    #     yc+=move
-    #     hitbox.y+=move
-    # #collisions
-    # if square.colliderect(hitbox):
-    #     xs=random.randint(0,WIDTH-wbox)
-    #     ys=random.randint(0,HEIGHT-hbox)
-    #     ChangeColor()
-    #     sq_color=colors.get(randColor)
-    #     square=pygame.Rect(xs,ys,wbox,hbox)
-    #     rad+=10
-    #     c_wbox+=13.5
-    #     c_hbox+=13.5
-    #     xh=xc-(rad/1.5)
-    #     yh=yc-(rad/1.5)
-    #     hitbox=pygame.Rect(xh,yh,c_wbox,c_hbox)
-
-    #Finish circle
-    # pygame.draw.rect(screen, sq_color, square)
-    # pygame.draw.circle(screen, cr_color, (xc,yc), rad)
-    # pygame.draw.rect(screen, hb_color, hitbox)
+            SC_SIZE=True
+        if SETT and ((xm >20 and xm <80) and (ym >300 and ym <340)):
+            SETT=False
+            SOUND=True
+        if SETT and ((xm >20 and xm <80) and (ym >350 and ym <390)):
+            SETT=False
+            MUSIC=True
+        if SETT and ((xm >20 and xm <80) and (ym >400 and ym <440)):
+            SETT=False
+            CIRCLE_CLR=True
+        if SETT and ((xm >20 and xm <80) and (ym >450 and ym <490)):
+            SETT=False
+            MOVEMENT=True
     pygame.display.update()
     pygame.time.delay(1)

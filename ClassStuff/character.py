@@ -33,14 +33,14 @@ while check:
         if event.type==pygame.QUIT:
             check=False
     keys=pygame.key.get_pressed()
-    if keys[pygame.K_a]:
+    if keys[pygame.K_a]and x>=move:
         x-=move
-    if keys[pygame.K_d]:
+    if keys[pygame.K_d] and x<=WIDTH-move:
         x+=move
     if land:
-        if keys[pygame.K_w]:
+        if keys[pygame.K_w]and y>=move:
             y-=move
-        if keys[pygame.K_s]:
+        if keys[pygame.K_s] and y<=HEIGHT-move:
             y+=move
         
     if y<385 and jumping==False:
