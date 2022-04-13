@@ -8,7 +8,7 @@ import os, random, pygame, datetime
 #If they colide, circle eats the rectangle and gets larger
 #Rectangle restarts
 os.system('cls')
-name=input('Enter your name: ')
+name=input('Enter your username: ')
 #Initialize pygame
 pygame.init()
 #Declare constants, lists, variables, dictionaries, any object
@@ -23,6 +23,8 @@ jump_move=10
 jumping=False
 rad=15
 gameScore=0
+S_coords=False
+C_coords=False
 MAIN=True
 GAME=False
 INST=False
@@ -33,8 +35,8 @@ LEV_III=False
 SCOREBOARD=False
 EXIT=False
 SC_SIZE=False
-SOUND=False
-MUSIC=False
+SHP_COORDINATES=False
+CRSR_COORDINATES=False
 CIRCLE_CLR=False
 MOVEMENT=False
 #creating screen
@@ -47,9 +49,9 @@ hb_btn=30
 xs_btn=50
 ys_btn=250
 MenuList=['Play','Instruction','Setting','Level 1','Level 2','Level 3','Scoreboard','Exit']
-SettingList=['Screen Size','Sound','Music','Circle Color','Movement Speed']
+SettingList=['Screen Size','Shape Coordinates','Cursor Coordinates','Circle Color','Movement Speed']
 ScreenSizeList=['600 x 600','800 x 800','1000 x 1000']
-AudioList=['On','Off']
+CoordsList=['On','Off']
 ColorsMenuList1=['red','orange','yellow']
 ColorsMenuList2=['green','blue','purple']
 ColorsMenuList3=['cyan','magenta','white']
@@ -103,13 +105,23 @@ def Game():
     hitbox=pygame.Rect(xh,yh,c_wbox,c_hbox)
     playGame=True
     while playGame:
+        if S_coords:
+            print('■','[',square.x,',',square.y,']')
+            print('●','[',xc,',',yc,']')
+            os.system('cls')
+        else:
+            print('')
+            os.system('cls')
         screen.fill(background)
         for case in pygame.event.get():
             if case.type==pygame.QUIT:
                 check=False
+                playGame=False
         keys=pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
+            GAME=False
             playGame=False
+            MAIN=True
         #movement for square
         if keys[pygame.K_LEFT] and square.x>=move:
             square.x-=move
@@ -159,7 +171,7 @@ def Game():
         pygame.draw.circle(screen, cr_color, (xc,yc), rad)
         pygame.draw.rect(screen, hb_color, hitbox)
         pygame.display.update()
-        pygame.time.delay(10)
+        pygame.time.delay(1)
     gameScore=rad-15
 
 #Fonts
@@ -276,11 +288,14 @@ def ColorMenu():
 title=TITLE_FNT.render('MENU',1,'green')
 xt=WIDTH/2-title.get_width()/2
 Instructions=MENU_FNT.render('Instructions:',1,'white')
-inst1=INST_FNT.render('1) There is one circle and one square.',1,'white')
-inst2=INST_FNT.render('2) Move the square with arrow keys.',1,'white')
-inst3=INST_FNT.render('3) Move the circle with WASD keys.',1,'white')
-inst4=INST_FNT.render('4) The circle must eat the square and the square must escape.',1,'white')
-inst5=INST_FNT.render('5) When they collide, the circle grows and the square is teleported.',1,'white')
+inst1=INST_FNT.render('~ There is one circle and one square.',1,'white')
+inst2=INST_FNT.render('- Move the square with arrow keys.',1,'white')
+inst3=INST_FNT.render('- Move the circle with WASD keys.',1,'white')
+inst4=INST_FNT.render('~ The circle must eat the square and the square must escape.',1,'white')
+inst5=INST_FNT.render('~ When they collide, the circle grows and the square is teleported.',1,'white')
+inst6=INST_FNT.render('- [esc] to return to the main menu and [e] to return to settings.',1,'white')
+inst7=INST_FNT.render('- Make sure to click the exit button to record your score.',1,'white')
+inst8=INST_FNT.render('* Coordinates are displayed in the terminal',1,'white')
 
 #displaying instructions screen
 def instScreen():
@@ -292,6 +307,9 @@ def instScreen():
     screen.blit(inst3,(10,400))
     screen.blit(inst4,(10,450))
     screen.blit(inst5,(10,500))
+    screen.blit(inst6,(10,550))
+    screen.blit(inst7,(10,600))
+    screen.blit(inst8,(10,650))
 def keepScore(score):
     date=datetime.datetime.now()
     scoreLine=str(score)+' '+name+' '+date.strftime('%m/%d/%Y'+'\n')
@@ -301,17 +319,28 @@ def keepScore(score):
     myFile.write(scoreLine)
     myFile.close()
 def screensizeChange():
-    global HEIGHT, WIDTH, screen
-    if ((xm>90 and xm<120) and (ym>250 and ym<290)):
+    global HEIGHT, WIDTH, screen, xmUP, ymUP
+    if ((xmUP>90 and xmUP<120) and (ymUP>250 and ymUP<290)) and ((xmR>90 and xmR<120) and (ymR>250 and ymR<290)):
         HEIGHT=600
         WIDTH=600
-    if ((xm>90 and xm<120) and (ym>300 and ym<340)):
+        pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
+        screen=pygame.display.set_mode((WIDTH,HEIGHT))
+        xmUP=0
+        ymUP=0
+    if ((xmUP>90 and xmUP<120) and (ymUP>300 and ymUP<340)):
         HEIGHT=800
         WIDTH=800
-    if ((xm>90 and xm<120) and (ym>350 and ym<390)):
+        pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
+        screen=pygame.display.set_mode((WIDTH,HEIGHT))
+        xmUP=0
+        ymUP=0
+    if ((xmUP>90 and xmUP<120) and (ymUP>350 and ymUP<390)):
         HEIGHT=1000
         WIDTH=1000
-    screen=pygame.display.set_mode((WIDTH,HEIGHT))
+        pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
+        screen=pygame.display.set_mode((WIDTH,HEIGHT))
+        xmUP=0
+        ymUP=0
 def movementChange():
     global move
     if ((xm>90 and xm<120) and (ym>250 and ym<290)):
@@ -323,13 +352,15 @@ def movementChange():
 
 while check:
     if MAIN:
+        pygame.mouse.set_visible(True)
         pygame.display.set_caption('Menu')
         screen.fill(background)
         TitleMenu("Circle eats Square")
         MainMenu(MenuList,0)
     if GAME:
+        pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
+        pygame.mouse.set_visible(False)
         pygame.display.set_caption('Circle eats Square')
-        ChangeColor()
         Game()
         if keys[pygame.K_ESCAPE]:
             GAME=False
@@ -353,32 +384,39 @@ while check:
         TitleMenu("SCREEN SIZE")
         MainMenu(ScreenSizeList,40)
         screensizeChange()
-        pygame.display.update()
         if keys[pygame.K_e]:
             SC_SIZE=False
             SETT=True
         if keys[pygame.K_ESCAPE]:
             SC_SIZE=False
             MAIN=True
-    if SOUND:
-        pygame.display.set_caption('Sound')
-        TitleMenu("SOUND")
-        MainMenu(AudioList,40)
+    if SHP_COORDINATES:
+        pygame.display.set_caption('Shape Coordinates')
+        TitleMenu("COORDINATES")
+        MainMenu(CoordsList,40)
+        if ((xm>90 and xm<120) and (ym>250 and ym<290)):
+            S_coords=True
+        if ((xm>90 and xm<120) and (ym>300 and ym<340)):
+            S_coords=False
         if keys[pygame.K_e]:
-            SOUND=False
+            SHP_COORDINATES=False
             SETT=True
         if keys[pygame.K_ESCAPE]:
-            SOUND=False
+            SHP_COORDINATES=False
             MAIN=True
-    if MUSIC:
-        pygame.display.set_caption('Music')
-        TitleMenu("MUSIC")
-        MainMenu(AudioList,40)
+    if CRSR_COORDINATES:
+        pygame.display.set_caption('Cursor Coordinates')
+        TitleMenu("COORDINATES")
+        MainMenu(CoordsList,40)
+        if ((xm>90 and xm<120) and (ym>250 and ym<290)):
+            C_coords=True
+        if ((xm>90 and xm<120) and (ym>300 and ym<340)):
+            C_coords=False
         if keys[pygame.K_e]:
-            MUSIC=False
+            CRSR_COORDINATES=False
             SETT=True
         if keys[pygame.K_ESCAPE]:
-            MUSIC=False
+            CRSR_COORDINATES=False
             MAIN=True
     if CIRCLE_CLR:
         pygame.display.set_caption('Circle Color')
@@ -443,21 +481,45 @@ while check:
         if case.type==pygame.QUIT:
             check=False
     keys=pygame.key.get_pressed() #this returns a list
+    mouse_posR=pygame.mouse.get_pos()
+    xmR=mouse_posR[0]
+    ymR=mouse_posR[1]
+    if C_coords:
+        print('NEUTRAL','[',xmR,',',ymR,']')
+        os.system('cls')
+    if case.type==pygame.MOUSEBUTTONUP:
+        mouse_posUP=pygame.mouse.get_pos()
+        xmUP=mouse_posUP[0]
+        ymUP=mouse_posUP[1]
+        if C_coords:
+            print('UP','[',xmUP,',',ymUP,']')
+        if SETT:
+            pygame.display.set_caption('Settings')
+            TitleMenu("SETTINGS")
+            MainMenu(SettingList,0)
+            if keys[pygame.K_ESCAPE]:
+                SETT=False
+                MAIN=True
+        if MAIN and ((xmUP >20 and xmUP <80) and (ymUP >350 and ymUP <390))or SETT :
+            MAIN=False
+            SETT=True
+        
     if case.type ==pygame.MOUSEBUTTONDOWN:
         mouse_pos=pygame.mouse.get_pos()
         xm=mouse_pos[0]
         ym=mouse_pos[1]
-        print(xm,ym)
-        os.system('cls')
+        if C_coords:
+            print('DOWN','[',xm,',',ym,']')
+            os.system('cls')
         if MAIN and ((xm >20 and xm <80) and (ym >250 and ym <290))or GAME:
             MAIN=False
             GAME=True
         if MAIN and ((xm >20 and xm <80) and (ym >300 and ym <340))or INST :
             MAIN=False
             INST=True
-        if MAIN and ((xm >20 and xm <80) and (ym >350 and ym <390))or SETT :
-            MAIN=False
-            SETT=True
+        # if MAIN and ((xm >20 and xm <80) and (ym >350 and ym <390))or SETT :
+        #     MAIN=False
+        #     SETT=True
         if MAIN and ((xm >20 and xm <80) and (ym >400 and ym <440))or LEV_I :
             MAIN=False
             LEV_I=True
@@ -479,10 +541,10 @@ while check:
             SC_SIZE=True
         if SETT and ((xm >20 and xm <80) and (ym >300 and ym <340)):
             SETT=False
-            SOUND=True
+            SHP_COORDINATES=True
         if SETT and ((xm >20 and xm <80) and (ym >350 and ym <390)):
             SETT=False
-            MUSIC=True
+            CRSR_COORDINATES=True
         if SETT and ((xm >20 and xm <80) and (ym >400 and ym <440)):
             SETT=False
             CIRCLE_CLR=True
