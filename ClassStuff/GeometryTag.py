@@ -18,7 +18,7 @@ WIDTH=700
 HEIGHT=700
 check=True #for the while loop
 playGame=True #for the game loop
-move=5
+move=10
 jump_move=10
 jumping=False
 rad=15
@@ -344,11 +344,11 @@ def screensizeChange():
 def movementChange():
     global move
     if ((xm>90 and xm<120) and (ym>250 and ym<290)):
-        move=5
-    if ((xm>90 and xm<120) and (ym>300 and ym<340)):
         move=10
+    if ((xm>90 and xm<120) and (ym>300 and ym<340)):
+        move=25
     if ((xm>90 and xm<120) and (ym>350 and ym<390)):
-        move=20
+        move=50
 
 while check:
     if MAIN:
