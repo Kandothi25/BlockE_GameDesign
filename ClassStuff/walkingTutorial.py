@@ -73,7 +73,6 @@ while run:
             Dead=True
             Falling=False
         else:
-            print('the loop is still working')
             y+=vel
             pygame.display.update()
             
