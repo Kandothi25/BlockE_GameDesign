@@ -1,7 +1,7 @@
 #Ishaan Kandoth
 #4/18/22
 #Final Game
-import os, pygame, datetime, random
+import os, pygame, datetime
 os.system('cls')
 name=input('Enter your username: ')
 pygame.init()
