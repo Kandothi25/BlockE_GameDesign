@@ -12,9 +12,9 @@ playLvl1=True
 jump_move=20
 jumping=False
 Falling=False
-set_Falling=False
-Gravity=False
+fall_move=0
 GravityCancel=False
+bump=False
 
 #character variables
 char_hb=30
@@ -84,6 +84,8 @@ proj_color=colors.get('yellow')
 platform_color=colors.get('black')
 
 while playLvl1:
+    yc2=character.y+char_hb
+    os.system('cls')
     screen.blit(background1,(0,0))
     #projectile.x-=15
     for case in pygame.event.get():
@@ -102,15 +104,8 @@ while playLvl1:
         character_right.x+=move
         character_top.x+=move
         character_bottom.x+=move
-    if jumping==False and keys[pygame.K_SPACE]:
+    if jumping==False and keys[pygame.K_SPACE] and Falling==False and bump==False:
         jumping=True
-
-    if set_Falling:
-        jump_move=0
-        print('e')
-        if Falling:
-            print('f')
-            set_Falling=False
 
     if jumping:
         character.y-=jump_move
@@ -119,16 +114,10 @@ while playLvl1:
         character_top.y-=jump_move
         character_bottom.y-=jump_move
         jump_move-=2
-        if Falling:
-            print('it is falling')
-            if yc_b==HEIGHT:
-                jumping=False
-                Falling=False
-                jump_move=20
-        else:
-            if jump_move<-20:
-                jumping=False
-                jump_move=20
+        if jump_move==0 and GravityCancel==False:
+            jumping=False
+            jump_move=20
+            Falling=True
 
     # if yc+char_hb+1>HEIGHT:
     #     jump_move=0
@@ -138,6 +127,8 @@ while playLvl1:
 
     if platform1.colliderect(character_bottom):
         GravityCancel=True
+        Falling=False
+        fall_move=0
         jumping=False
         jump_move=20
         character.y=ypl-1-30
@@ -145,6 +136,8 @@ while playLvl1:
         character_right.y=ypl-1-20
         character_top.y=ypl-1-40
         character_bottom.y=ypl-1
+        if keys[pygame.K_SPACE]:
+            jumping=True
     else:
         GravityCancel=False
 
@@ -154,33 +147,45 @@ while playLvl1:
         #print('GC is off')
 
     if platform1.colliderect(character_top):
+        bump=True
+        #Jumping=False
+        #jump_move=20
         character.y+=char_top_hb
         character_left.y+=char_top_hb
         character_right.y+=char_top_hb
         character_top.y+=char_top_hb
         character_bottom.y+=char_top_hb
-        set_Falling=True
         Falling=True
-        Jumping=True
-
-    if jumping==False and character_bottom.y<HEIGHT and GravityCancel==False and Falling==False:
-        Gravity=True
     else:
-        Gravity=False
-        
-    if Gravity:
-        print('it works')
-        jumping=True
-        Falling=True
-        set_Falling=True
-        if jumping:
-            Gravity=False
+        bump=False
 
-    # if jumping==False and GravityCancel==False:
-    #     print('yes')
-    
-    if character_bottom.y<HEIGHT:
-        print('yes')
+    if jumping==False and character_bottom.y<HEIGHT and GravityCancel==False:
+        Falling=True
+        
+    if Falling and GravityCancel==False:
+        character.y-=fall_move
+        character_left.y-=fall_move
+        character_right.y-=fall_move
+        character_top.y-=fall_move
+        character_bottom.y-=fall_move
+        fall_move-=2
+        if yc2>HEIGHT:
+            Falling=False
+            fall_move=0
+            character.y=HEIGHT-30
+            character_left.y=HEIGHT-20
+            character_right.y=HEIGHT-20
+            character_top.y=HEIGHT-40
+            character_bottom.y=HEIGHT
+
+    # if int(yc_b)>=int(HEIGHT):
+    #     print('too low 1')
+    #     yc=HEIGHT-30
+    #     yc_l=HEIGHT-20
+    #     yc_r=HEIGHT-20
+    #     yc_t=HEIGHT-40
+    #     yc_b=HEIGHT
+    #     Falling=False
 
     if projectile.colliderect(character):
         playLvl1=False
@@ -189,7 +194,7 @@ while playLvl1:
     xm=mouse_pos[0]
     ym=mouse_pos[1]
     # print(xm,ym)
-    os.system('cls')
+    #os.system('cls')
 
     #updating screen
     pygame.draw.rect(screen,platform_color, platform1)
