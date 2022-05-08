@@ -55,6 +55,13 @@ while playLvl2:
         xb2=int(204000/149)
         bg_move+=0.05
 
+    if xs1<-80:
+        xs1=WIDTH+30
+    if xs2<-50:
+        xs2=WIDTH+60
+    if xs3<-30:
+        xs3=WIDTH+80
+    
     for case in pygame.event.get():
         if case.type==pygame.QUIT:
             playLvl2=False
