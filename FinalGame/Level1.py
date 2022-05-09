@@ -67,8 +67,8 @@ ye2=70
 enemy2=pygame.Rect(xe2,ye2,enemy2_wb,enemy2_hb)
 
 #Projectile variables
-proj_hb=5
-proj_wb=5
+proj_hb=10
+proj_wb=10
 xpr=35
 ypr=370
 projectile=pygame.Rect(xpr,ypr,proj_wb,proj_hb)
