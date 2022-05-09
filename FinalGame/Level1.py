@@ -4,7 +4,7 @@
 import os, pygame
 os.system('cls')
 pygame.init()
-sf=0.5
+sf=1
 WIDTH=700*sf
 HEIGHT=600*sf
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
@@ -166,7 +166,7 @@ while playLvl1:
         character_right.x-=move
         character_top.x-=move
         character_bottom.x-=move
-    if keys[pygame.K_d] and character.x<=WIDTH-(char_wb+move) and not platform1.colliderect(character_right) and not platform2.colliderect(character_right) and not platform3.colliderect(character_right) and not platform4.colliderect(character_right) and not platform5.colliderect(character_right) and not platform6.colliderect(character_right) and not platform7.colliderect(character_right):
+    if keys[pygame.K_d] and character.x<=WIDTH-(char_wb+move) and not platform1.colliderect(character_right) and not platform2.colliderect(character_right) and not platform3.colliderect(character_right) and not platform4.colliderect(character_right) and not platform5.colliderect(character_right) and not platform6.colliderect(character_right) and not platform7.colliderect(character_right) and not enemy2.colliderect(character_right):
         character.x+=move
         character_left.x+=move
         character_right.x+=move

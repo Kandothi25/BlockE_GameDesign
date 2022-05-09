@@ -4,13 +4,14 @@
 import os, pygame, random
 os.system('cls')
 pygame.init()
-sf=0.5
+sf=1
 WIDTH=700*sf
 HEIGHT=600*sf
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
 playLvl2=True
 lvl2_jump_move=20*sf
 jumping=False
+spawnEnemy=1
 
 colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
 'blue':[0,0,255],'purple':[128,0,128],'cyan':[0,255,255],'magenta':[255,0,255],
@@ -53,20 +54,6 @@ xc=60*sf
 yc=HEIGHT-100*sf
 character=pygame.Rect(xc,yc,char_wb,char_hb)
 
-#left hitbox
-char_left_hb=10*sf
-char_left_wb=10*sf
-xc_l=-10*sf
-yc_l=HEIGHT-20*sf
-character_left=pygame.Rect(xc_l,yc_l,char_left_wb,char_left_hb)
-
-#bottom hitbox
-char_bottom_hb=10*sf
-char_bottom_wb=10*sf
-xc_b=10*sf
-yc_b=HEIGHT
-character_bottom=pygame.Rect(xc_b,yc_b,char_bottom_wb,char_bottom_hb)
-
 #enemy variables
 enemy_hb=30*sf
 enemy_wb=30*sf
@@ -77,8 +64,8 @@ enemy=pygame.Rect(xe,ye,enemy_wb,enemy_hb)
 #projectile variables
 proj_hb=10*sf
 proj_wb=10*sf
-xp=xe-enemy_wb
-yp=ye+10*sf
+xp=xe
+yp=ye
 projectile=pygame.Rect(xp,yp,proj_wb,proj_hb)
 
 while playLvl2:
@@ -105,11 +92,29 @@ while playLvl2:
 
     if xs1<-80*sf:
         xs1=WIDTH+30*sf
+        if spawnEnemy==1:
+            spawnEnemy=random.randint(1,2)
     if xs2<-50*sf:
         xs2=WIDTH+60*sf
     if xs3<-30*sf:
         xs3=WIDTH+80*sf
     
+    if enemy.x<-80*sf:
+        spawnEnemy=random.randint(0,2)
+
+    if spawnEnemy==1:
+        enemy.x=WIDTH+30*sf
+        projectile.x=enemy.x
+    if spawnEnemy==2:
+        enemy.x-=bg_move
+        projectile.x-=bg_move
+    
+    if projectile.x<WIDTH-30*sf:
+        projectile.x-=bg_move*2
+
+    if character.colliderect(projectile):
+        playLvl2=False
+
     for case in pygame.event.get():
         if case.type==pygame.QUIT:
             playLvl2=False
@@ -126,6 +131,8 @@ while playLvl2:
     if character.colliderect(spike1_hitbox) or character.colliderect(spike2_hitbox) or character.colliderect(spike3_hitbox):
         playLvl2=False
     pygame.draw.rect(screen, char_color, character,int(3*sf))
+    pygame.draw.rect(screen, enemy_color, enemy,int(3*sf))
+    pygame.draw.rect(screen, projectile_color, projectile)
     screen.blit(spike1,(xs1,ys1))
     screen.blit(spike2,(xs2,ys2))
     screen.blit(spike3,(xs3,ys3))
