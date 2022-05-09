@@ -6,7 +6,7 @@ os.system('cls')
 name=input('Enter your username: ')
 pygame.init()
 WIDTH=700
-HEIGHT=700
+HEIGHT=600
 check=True #for the while loop
 playGame=True #for the game loop
 move=10
@@ -49,7 +49,7 @@ colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255
 'blue':[0,0,255],'purple':[128,0,128],'cyan':[0,255,255],'magenta':[255,0,255],
 'white':[255,255,255],'black':[0,0,0]}
 
-background=colors.get('black')
+background=pygame.transform.scale(pygame.image.load('FinalGame\city.jpg'),(700,600))
 hb_color=colors.get('white')
 sq_btn_color=colors.get('cyan')
 

@@ -15,7 +15,7 @@ pygame.init()
 
 #screen size
 WIDTH=700
-HEIGHT=700
+HEIGHT=600
 check=True #for the while loop
 playGame=True #for the game loop
 move=10
@@ -64,7 +64,7 @@ colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255
 randColor=random.choice(list(colors))
 
 #Get colors
-background=colors.get('black')
+background=pygame.transform.scale(pygame.image.load('FinalGame\city.jpg'),(700,600))
 cr_color=colors.get('white')
 hb_color=colors.get('white')
 sq_btn_color=colors.get('cyan')
@@ -112,7 +112,7 @@ def Game():
         else:
             print('')
             os.system('cls')
-        screen.fill(background)
+        screen.blit(background,(0,0))
         for case in pygame.event.get():
             if case.type==pygame.QUIT:
                 check=False
@@ -182,7 +182,7 @@ INST_FNT=pygame.font.SysFont('calibri',25)
 #Menu Screen Variables
 def TitleMenu(Message):
     text=TITLE_FNT.render(Message,1,'green')
-    screen.fill('black')
+    screen.blit(background,(0,0))
     xt=WIDTH/2-text.get_width()/2
     screen.blit(text,(xt,50))
 square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
@@ -299,7 +299,7 @@ inst8=INST_FNT.render('* Coordinates are displayed in the terminal',1,'white')
 
 #displaying instructions screen
 def instScreen():
-    screen.fill(background)
+    screen.blit(background,(0,0))
     screen.blit(title,(xt,50))
     screen.blit(Instructions,(200,200))
     screen.blit(inst1,(10,300))
@@ -354,7 +354,7 @@ while check:
     if MAIN:
         pygame.mouse.set_visible(True)
         pygame.display.set_caption('Menu')
-        screen.fill(background)
+        screen.blit(background,(0,0))
         TitleMenu("Circle eats Square")
         MainMenu(MenuList,0)
     if GAME:
