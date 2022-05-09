@@ -1,15 +1,17 @@
 #Ishaan Kandoth
 #5/8/22
+#Level 3 of Final Game
 import os, pygame, random
 os.system('cls')
 pygame.init()
-WIDTH=700
-HEIGHT=600
+sf=0.5
+WIDTH=700*sf
+HEIGHT=600*sf
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
 playLvl3=True
-move=10
+move=10*sf
 jumping=False
-jump_move=20
+jump_move=20*sf
 full_health=True
 medium_health=False
 low_health=False
@@ -29,8 +31,8 @@ colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255
 'blue':[0,0,255],'purple':[128,0,128],'cyan':[0,255,255],'magenta':[255,0,255],
 'white':[255,255,255],'black':[0,0,0]}
 
-BOSS_FNT=pygame.font.SysFont('courier',40)
-Health_title=BOSS_FNT.render('Boss Health',1,'black')
+BOSS_FNT=pygame.font.SysFont('courier',int(40*sf))
+Health_title=BOSS_FNT.render('Boss Health',1*sf,'black')
 xt=WIDTH/2-Health_title.get_width()/2
 
 char_color=colors.get('blue')
@@ -45,38 +47,38 @@ health_color1=colors.get('red')
 health_gone=colors.get('black')
 
 #character variables
-char_hb=30
-char_wb=30
-xc=60
-yc=HEIGHT-80
+char_hb=30*sf
+char_wb=30*sf
+xc=60*sf
+yc=HEIGHT-80*sf
 character=pygame.Rect(xc,yc,char_wb,char_hb)
 
 #left hitbox
-char_left_hb=10
-char_left_wb=10
-xc_l=50
-yc_l=HEIGHT-70
+char_left_hb=10*sf
+char_left_wb=10*sf
+xc_l=50*sf
+yc_l=HEIGHT-70*sf
 character_left=pygame.Rect(xc_l,yc_l,char_left_wb,char_left_hb)
 
 #right hitbox
-char_right_hb=10
-char_right_wb=10
-xc_r=90
-yc_r=HEIGHT-70
+char_right_hb=10*sf
+char_right_wb=10*sf
+xc_r=90*sf
+yc_r=HEIGHT-70*sf
 character_right=pygame.Rect(xc_r,yc_r,char_right_wb,char_right_hb)
 
 #bottom hitbox
-char_bottom_hb=10
-char_bottom_wb=10
-xc_b=70
-yc_b=HEIGHT-50
+char_bottom_hb=10*sf
+char_bottom_wb=10*sf
+xc_b=70*sf
+yc_b=HEIGHT-50*sf
 character_bottom=pygame.Rect(xc_b,yc_b,char_bottom_wb,char_bottom_hb)
 
 #boss variables
-boss_hb=60
-boss_wb=60
+boss_hb=60*sf
+boss_wb=60*sf
 xb=WIDTH/2-boss_wb/2
-yb=HEIGHT-110
+yb=HEIGHT-110*sf
 boss=pygame.Rect(xb,yb,boss_wb,boss_hb)
 
 bossPhase=random.randint(1,2)
@@ -84,48 +86,48 @@ bossPhase=random.randint(1,2)
 #boss health bar variables
 
 #boss health point 1
-hp1_hb=30
-hp1_wb=30
-xhp1=290
-yhp1=120
+hp1_hb=30*sf
+hp1_wb=30*sf
+xhp1=290*sf
+yhp1=120*sf
 healthPoint1=pygame.Rect(xhp1,yhp1,hp1_wb,hp1_hb)
 #boss health point 2
-hp2_hb=30
-hp2_wb=30
-xhp2=330
-yhp2=120
+hp2_hb=30*sf
+hp2_wb=30*sf
+xhp2=330*sf
+yhp2=120*sf
 healthPoint2=pygame.Rect(xhp2,yhp2,hp2_wb,hp2_hb)
 #boss health point 3
-hp3_hb=30
-hp3_wb=30
-xhp3=370
-yhp3=120
+hp3_hb=30*sf
+hp3_wb=30*sf
+xhp3=370*sf
+yhp3=120*sf
 healthPoint3=pygame.Rect(xhp3,yhp3,hp3_wb,hp3_hb)
 
 #projectile variables
 
 #projectile 1
-proj1_hb=20
-proj1_wb=20
+proj1_hb=20*sf
+proj1_wb=20*sf
 xp1=xb-proj1_wb
-yp1=yb+20
+yp1=yb+20*sf
 projectile1=pygame.Rect(xp1,yp1,proj1_wb,proj1_hb)
 #projectile 2
-proj2_hb=20
-proj2_wb=20
+proj2_hb=20*sf
+proj2_wb=20*sf
 xp2=xb-proj2_wb
-yp2=yb+20
+yp2=yb+20*sf
 projectile2=pygame.Rect(xp2,yp2,proj2_wb,proj2_hb)
 #projectile 3
-proj3_hb=20
-proj3_wb=20
+proj3_hb=20*sf
+proj3_wb=20*sf
 xp3=xb-proj3_wb
-yp3=yb+20
+yp3=yb+20*sf
 projectile3=pygame.Rect(xp3,yp3,proj3_wb,proj3_hb)
 
-background=pygame.transform.scale(pygame.image.load('FinalGame\Map_DemonIsland.png'),(1920,1080))
-xbg=-615
-ybg=-200
+background=pygame.transform.scale(pygame.image.load('FinalGame\Map_DemonIsland.png'),(1920*sf,1080*sf))
+xbg=-615*sf
+ybg=-200*sf
 
 while playLvl3:
     os.system('cls')
@@ -151,10 +153,10 @@ while playLvl3:
         character_left.y-=jump_move
         character_right.y-=jump_move
         character_bottom.y-=jump_move
-        jump_move-=2
-        if jump_move<-20:
+        jump_move-=2*sf
+        if jump_move<-20*sf:
             jumping=False
-            jump_move=20
+            jump_move=20*sf
     
     if bossPhase==1:
         bossMove=True
@@ -243,7 +245,7 @@ while playLvl3:
             bossPhase=random.randint(1,2)
 
     if bossNewPos==1:
-        boss.x=0+boss_wb
+        boss.x=boss_wb
         bossPhase=random.randint(1,2)
         bossNewPos=0
     if bossNewPos==2:
@@ -304,7 +306,7 @@ while playLvl3:
             if boss.x<WIDTH/2-boss_wb/2:
                 bossNewPos=2
         if bossNewPos==1:
-            boss.x=0+boss_wb
+            boss.x=boss_wb
             bossPhase=random.randint(1,2)
             bossNewPos=0
         if bossNewPos==2:
@@ -317,12 +319,12 @@ while playLvl3:
         print('Game Over\nYou win')
 
     screen.blit(background,(xbg,ybg))
-    screen.blit(Health_title,(xt,50))
-    pygame.draw.rect(screen,char_color,character,3)
+    screen.blit(Health_title,(xt,50*sf))
+    pygame.draw.rect(screen,char_color,character,int(3*sf))
     pygame.draw.rect(screen,char_side_color,character_left)
     pygame.draw.rect(screen,char_side_color,character_right)
     pygame.draw.rect(screen,char_side_color,character_bottom)
-    pygame.draw.rect(screen,boss_color,boss,3)
+    pygame.draw.rect(screen,boss_color,boss,int(3*sf))
     if full_health:
         pygame.draw.rect(screen,health_color3,healthPoint1)
         pygame.draw.rect(screen,health_color3,healthPoint2)
