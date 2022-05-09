@@ -4,7 +4,7 @@
 import os, pygame, random
 os.system('cls')
 pygame.init()
-sf=0.5
+sf=1
 WIDTH=700*sf
 HEIGHT=600*sf
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
