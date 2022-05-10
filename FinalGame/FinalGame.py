@@ -1,7 +1,7 @@
 #Ishaan Kandoth
 #4/18/22
 #Final Game
-import os, pygame, datetime, random
+import os, pygame, datetime, random, time
 os.system('cls')
 name=input('Enter your username: ')
 pygame.init()
@@ -13,6 +13,11 @@ playGame=True #for the game loop
 move=10*sf
 jump_move=10*sf
 jumping=False
+lvl1Success=False
+lvl3Success=False
+lvl1Score=0
+lvl2Score=0
+lvl3Score=0
 gameScore=0
 MAIN=True
 GAME=False
@@ -26,6 +31,9 @@ EXIT=False
 SC_SIZE=False
 BACKGROUNDCOLOR=False
 BACKGROUNDIMGS=False
+playLvl1=True
+playLvl2=True
+playLvl3=True
 
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption('Final Game')
@@ -36,7 +44,7 @@ xs_btn=50*sf
 ys_btn=250*sf
 MenuList=['Play','Instruction','Setting','Level 1','Level 2','Level 3','Scoreboard','Exit']
 SettingList=['Screen Size','Background Images','Background Color']
-ScreenSizeList=['600 x 600','800 x 800','1000 x 1000']
+ScreenSizeList=['350 x 300','700 x 600','1050 x 900']
 bgimgsList=['On','Off']
 ColorsMenuList1=['red','orange','yellow']
 ColorsMenuList2=['green','blue','purple']
@@ -51,13 +59,13 @@ sq_btn_color=colors.get('black')
 background_color=colors.get('white')
 
 #Fonts
-TITLE_FNT=pygame.font.SysFont('comicsans',int(80*sf))
+TITLE_FNT=pygame.font.SysFont('comicsans',int(60*sf))
 MENU_FNT=pygame.font.SysFont('courier',int(40*sf))
 INST_FNT=pygame.font.SysFont('calibri',int(25*sf))
 
 #Menu Screen Variables
 def TitleMenu(Message):
-    global sf
+    global sf, menuBackground
     text=TITLE_FNT.render(Message,1,'black')
     screen.blit(menuBackground,(0,0))
     xt=WIDTH/2-text.get_width()/2
@@ -67,12 +75,12 @@ square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
 def MainMenu(Mlist,xOption):
     global xs_btn,ys_btn,wb_btn,hb_btn,sf
     xs_btn=50*sf
-    ty=250*sf
+    ty=200*sf
     xs_btn+=xOption
-    ys_btn=250*sf
+    ys_btn=200*sf
     for i in range(len(Mlist)):
         message=Mlist[i]
-        text=INST_FNT.render(message,1,'black')
+        text=INST_FNT.render(message,1,'yellow')
         screen.blit(text,(xs_btn+40*sf,ty))
         square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
         pygame.draw.rect(screen,sq_btn_color,square_button)
@@ -123,23 +131,23 @@ def ColorMenu():
         pygame.draw.rect(screen,sq_btn_color,square_button)
         ys_btn+=50*sf
         ty+=50*sf
-    if ((xm>90*sf and xm<120*sf) and (ym>250*sf and ym<290*sf)):
+    if ((xm>90*sf and xm<120*sf) and (ym>250*sf and ym<280*sf)):
         background_color=colors.get('red')
-    if ((xm>90*sf and xm<120*sf) and (ym>300*sf and ym<340*sf)):
+    if ((xm>90*sf and xm<120*sf) and (ym>300*sf and ym<330*sf)):
         background_color=colors.get('orange')        
-    if ((xm>90*sf and xm<120*sf) and (ym>350*sf and ym<390*sf)):
+    if ((xm>90*sf and xm<120*sf) and (ym>350*sf and ym<380*sf)):
         background_color=colors.get('yellow')        
-    if ((xm>290*sf and xm<320*sf) and (ym>250*sf and ym<290*sf)):
+    if ((xm>290*sf and xm<320*sf) and (ym>250*sf and ym<280*sf)):
         background_color=colors.get('green')        
-    if ((xm>290*sf and xm<320*sf) and (ym>300*sf and ym<340*sf)):
+    if ((xm>290*sf and xm<320*sf) and (ym>300*sf and ym<330*sf)):
         background_color=colors.get('blue')        
-    if ((xm>290*sf and xm<320*sf) and (ym>350*sf and ym<390*sf)):
+    if ((xm>290*sf and xm<320*sf) and (ym>350*sf and ym<380*sf)):
         background_color=colors.get('purple')        
-    if ((xm>490*sf and xm<520*sf) and (ym>250*sf and ym<290*sf)):
+    if ((xm>490*sf and xm<520*sf) and (ym>250*sf and ym<280*sf)):
         background_color=colors.get('cyan')        
-    if ((xm>490*sf and xm<520*sf) and (ym>300*sf and ym<340*sf)):
+    if ((xm>490*sf and xm<520*sf) and (ym>300*sf and ym<330*sf)):
         background_color=colors.get('magenta')        
-    if ((xm>490*sf and xm<520*sf) and (ym>350*sf and ym<390*sf)):
+    if ((xm>490*sf and xm<520*sf) and (ym>350*sf and ym<380*sf)):
         background_color=colors.get('white')
         
     pygame.display.update()
@@ -148,31 +156,29 @@ def ColorMenu():
 #instructions screen variables
 title=TITLE_FNT.render('MENU',1,'black')
 xt=WIDTH/2-title.get_width()/2
-Instructions=MENU_FNT.render('Instructions:',1,'white')
-inst1=INST_FNT.render('~ There is one circle and one square.',1,'white')
-inst2=INST_FNT.render('- Move the square with arrow keys.',1,'white')
-inst3=INST_FNT.render('- Move the circle with WASD keys.',1,'white')
-inst4=INST_FNT.render('~ The circle must eat the square and the square must escape.',1,'white')
-inst5=INST_FNT.render('~ When they collide, the circle grows and the square is teleported.',1,'white')
-inst6=INST_FNT.render('- [esc] to return to the main menu and [e] to return to settings.',1,'white')
-inst7=INST_FNT.render('- Make sure to click the exit button to record your score.',1,'white')
-inst8=INST_FNT.render('* Coordinates are displayed in the terminal',1,'white')
+Instructions=MENU_FNT.render('Instructions:',1,'Yellow')
+inst1=INST_FNT.render('You are a ninja and the shadow cult has taken over your city',1,'white')
+inst2=INST_FNT.render('You must stop them and restore order to the ninja guild',1,'white')
+inst3=INST_FNT.render('Move left with A, right with D, and jump with SPACE',1,'white')
+inst4=INST_FNT.render('1st level is a platformer, 2nd is a runner, 3rd is a bossfight',1,'white')
+inst5=INST_FNT.render('Hold [esc] to return to main menu and [e] to return settings.',1,'white')
+inst6=INST_FNT.render('Make sure to click the exit button to record your score.',1,'white')
 
 #displaying instructions screen
 def instScreen():
+    global sf, menuBackground
     screen.blit(menuBackground,(0,0))
     screen.blit(title,(xt,50*sf))
-    screen.blit(Instructions,(200*sf,200*sf))
+    screen.blit(Instructions,(200*sf,240*sf))
     screen.blit(inst1,(10*sf,300*sf))
     screen.blit(inst2,(10*sf,350*sf))
     screen.blit(inst3,(10*sf,400*sf))
     screen.blit(inst4,(10*sf,450*sf))
     screen.blit(inst5,(10*sf,500*sf))
     screen.blit(inst6,(10*sf,550*sf))
-    screen.blit(inst7,(10*sf,600*sf))
-    screen.blit(inst8,(10*sf,650*sf))
 
 def keepScore(score):
+    global sf
     date=datetime.datetime.now()
     scoreLine=str(score)+' '+name+' '+date.strftime('%m/%d/%Y'+'\n')
     #open a file and write
@@ -182,39 +188,90 @@ def keepScore(score):
     myFile.close()
 
 def screensizeChange():
-    global HEIGHT, WIDTH, screen, xmUP, ymUP,sf
-    if ((xmUP>90*sf and xmUP<120*sf) and (ymUP>250*sf and ymUP<290*sf)) and ((xmR>90*sf and xmR<120*sf) and (ymR>250*sf and ymR<290*sf)):
-        HEIGHT=350
-        WIDTH=300
+    global HEIGHT, WIDTH, screen, xmUP, ymUP, sf, menuBackground, TITLE_FNT, MENU_FNT, INST_FNT, wb_btn, hb_btn, xs_btn, ys_btn, Instructions, inst1, inst2, inst3, inst4, inst5, inst6, title, xt
+    if ((xmUP>90*sf and xmUP<120*sf) and (ymUP>200*sf and ymUP<230*sf)) and ((xmR>90*sf and xmR<120*sf) and (ymR>200*sf and ymR<230*sf)):
+        HEIGHT=300
+        WIDTH=350
         sf=0.5  
         pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
         screen=pygame.display.set_mode((WIDTH,HEIGHT))
+        menuBackground=pygame.transform.scale(pygame.image.load('FinalGame\city.jpg'),(700*sf,600*sf))
+        TITLE_FNT=pygame.font.SysFont('comicsans',int(60*sf))
+        MENU_FNT=pygame.font.SysFont('courier',int(40*sf))
+        INST_FNT=pygame.font.SysFont('calibri',int(25*sf))
+        title=TITLE_FNT.render('MENU',1,'black')
+        xt=WIDTH/2-title.get_width()/2
+        Instructions=MENU_FNT.render('Instructions:',1,'Yellow')
+        inst1=INST_FNT.render('You are a ninja and the shadow cult has taken over your city',1,'white')
+        inst2=INST_FNT.render('You must stop them and restore order to the ninja guild',1,'white')
+        inst3=INST_FNT.render('Move left with A, right with D, and jump with SPACE',1,'white')
+        inst4=INST_FNT.render('1st level is a platformer, 2nd is a runner, 3rd is a bossfight',1,'white')
+        inst5=INST_FNT.render('Hold [esc] to return to main menu and [e] to return settings.',1,'white')
+        inst6=INST_FNT.render('Make sure to click the exit button to record your score.',1,'white')
+        wb_btn=30*sf
+        hb_btn=30*sf
+        xs_btn=50*sf
+        ys_btn=250*sf
         xmUP=0
         ymUP=0
-    if ((xmUP>90*sf and xmUP<120*sf) and (ymUP>300*sf and ymUP<340*sf)):
-        HEIGHT=700
-        WIDTH=600
+    if ((xmUP>90*sf and xmUP<120*sf) and (ymUP>250*sf and ymUP<280*sf)):
+        HEIGHT=600
+        WIDTH=700
         sf=1
         pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
         screen=pygame.display.set_mode((WIDTH,HEIGHT))
+        menuBackground=pygame.transform.scale(pygame.image.load('FinalGame\city.jpg'),(700*sf,600*sf))
+        TITLE_FNT=pygame.font.SysFont('comicsans',int(60*sf))
+        MENU_FNT=pygame.font.SysFont('courier',int(40*sf))
+        INST_FNT=pygame.font.SysFont('calibri',int(25*sf))
+        title=TITLE_FNT.render('MENU',1,'black')
+        xt=WIDTH/2-title.get_width()/2
+        Instructions=MENU_FNT.render('Instructions:',1,'Yellow')
+        inst1=INST_FNT.render('You are a ninja and the shadow cult has taken over your city',1,'white')
+        inst2=INST_FNT.render('You must stop them and restore order to the ninja guild',1,'white')
+        inst3=INST_FNT.render('Move left with A, right with D, and jump with SPACE',1,'white')
+        inst4=INST_FNT.render('1st level is a platformer, 2nd is a runner, 3rd is a bossfight',1,'white')
+        inst5=INST_FNT.render('Hold [esc] to return to main menu and [e] to return settings.',1,'white')
+        inst6=INST_FNT.render('Make sure to click the exit button to record your score.',1,'white')
+        wb_btn=30*sf
+        hb_btn=30*sf
+        xs_btn=50*sf
+        ys_btn=250*sf
         xmUP=0
         ymUP=0
-    if ((xmUP>90*sf and xmUP<120*sf) and (ymUP>350*sf and ymUP<390*sf)):
-        HEIGHT=1050
-        WIDTH=900
+    if ((xmUP>90*sf and xmUP<120*sf) and (ymUP>300*sf and ymUP<330*sf)):
+        HEIGHT=900
+        WIDTH=1050
         sf=1.5
         pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
         screen=pygame.display.set_mode((WIDTH,HEIGHT))
+        menuBackground=pygame.transform.scale(pygame.image.load('FinalGame\city.jpg'),(700*sf,600*sf))
+        TITLE_FNT=pygame.font.SysFont('comicsans',int(60*sf))
+        MENU_FNT=pygame.font.SysFont('courier',int(40*sf))
+        INST_FNT=pygame.font.SysFont('calibri',int(25*sf))
+        title=TITLE_FNT.render('MENU',1,'black')
+        xt=WIDTH/2-title.get_width()/2
+        Instructions=MENU_FNT.render('Instructions:',1,'Yellow')
+        inst1=INST_FNT.render('You are a ninja and the shadow cult has taken over your city',1,'white')
+        inst2=INST_FNT.render('You must stop them and restore order to the ninja guild',1,'white')
+        inst3=INST_FNT.render('Move left with A, right with D, and jump with SPACE',1,'white')
+        inst4=INST_FNT.render('1st level is a platformer, 2nd is a runner, 3rd is a bossfight',1,'white')
+        inst5=INST_FNT.render('Hold [esc] to return to main menu and [e] to return settings.',1,'white')
+        inst6=INST_FNT.render('Make sure to click the exit button to record your score.',1,'white')
+        wb_btn=30*sf
+        hb_btn=30*sf
+        xs_btn=50*sf
+        ys_btn=250*sf
         xmUP=0
         ymUP=0
 
 def Level1():
-    global sf, GAME, MAIN
+    global sf, GAME, MAIN, LEV_I, playLvl1, playLvl2, playLvl3, lvl1_start_time, lvl1_end_time, lvl1Score, lvl1Success
     WIDTH=700*sf
     HEIGHT=600*sf
     screen=pygame.display.set_mode((WIDTH,HEIGHT))
-    move=10*sf
     playLvl1=True
+    move=10*sf
     jump_move=20*sf
     jumping=False
     Falling=False
@@ -222,6 +279,8 @@ def Level1():
     GravityCancel=False
     bump=False
     shootProjectile=False
+    lvl1Score=0
+    lvl1_start_time=time.time()
 
     #character variables
     char_hb=30*sf
@@ -285,7 +344,6 @@ def Level1():
     xpo=WIDTH-30*sf
     ypo=40*sf
     portal=pygame.Rect(xpo,ypo,portal_wb,portal_hb)
-    #pygame.transform.scale(pygame.image.load(''))
 
     #Platform 1 variables
     plat1_hb=60*sf
@@ -358,6 +416,7 @@ def Level1():
     portal_color=colors.get('green')
 
     while playLvl1:
+        print(round(time.time()-lvl1_start_time,0),'sec')
         yc2=character.y+char_hb
         os.system('cls')
         screen.blit(background1,(0,0))
@@ -366,9 +425,18 @@ def Level1():
                 playLvl1=False
         keys=pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            GAME=False
-            playLvl1=False
-            MAIN=True
+            if GAME:
+                lvl1Success=False
+                GAME=False
+                playLvl1=False
+                playLvl2=False
+                playLvl3=False
+                MAIN=True
+            else:
+                lvl1Success=False
+                LEV_I=False
+                playLvl1=False
+                MAIN=True
         if keys[pygame.K_a] and character.x>=move and not platform1.colliderect(character_left) and not platform2.colliderect(character_left) and not platform3.colliderect(character_left) and not platform4.colliderect(character_left) and not platform5.colliderect(character_left) and not platform6.colliderect(character_left) and not platform7.colliderect(character_left):
             character.x-=move
             character_left.x-=move
@@ -448,16 +516,16 @@ def Level1():
         if shootProjectile:
             projectile.x+=20*sf
         if projectile.colliderect(character):
+            lvl1Success=False
+            LEV_I=False
             playLvl1=False
+            MAIN=True
 
         if character.colliderect(portal):
+            lvl1Success=True
+            LEV_I=False
             playLvl1=False
-
-        #mouse coordinates
-        mouse_pos=pygame.mouse.get_pos()
-        xm=mouse_pos[0]
-        ym=mouse_pos[1]
-        # print(xm,ym)
+            MAIN=True
 
         #updating screen
         for i in range (len(platformList)):
@@ -480,9 +548,14 @@ def Level1():
         screen.blit(plat7_img,(xpl7,ypl7))
         pygame.time.delay(20)
         pygame.display.update()
+    lvl1_end_time=time.time()
+    if lvl1Success:
+        lvl1Score=round(lvl1_end_time-lvl1_start_time,0)
+    else:
+        lvl1Score=0
 
 def Level2():
-    global sf, GAME, MAIN
+    global sf, GAME, MAIN, LEV_II, playLvl1, playLvl2, playLvl3, lvl2Score, lvl2_start_time, lvl2_end_time
     WIDTH=700*sf
     HEIGHT=600*sf
     screen=pygame.display.set_mode((WIDTH,HEIGHT))
@@ -490,6 +563,8 @@ def Level2():
     lvl2_jump_move=20*sf
     jumping=False
     spawnEnemy=1
+    lvl2Score=0
+    lvl2_start_time=time.time()
 
     colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
     'blue':[0,0,255],'purple':[128,0,128],'cyan':[0,255,255],'magenta':[255,0,255],
@@ -547,7 +622,7 @@ def Level2():
     projectile=pygame.Rect(xp,yp,proj_wb,proj_hb)
 
     while playLvl2:
-        print(WIDTH,HEIGHT)
+        print(round(time.time()-lvl2_start_time,0),'sec')
         pygame.draw.rect(screen,spike_color,spike1_hitbox,int(3*sf))
         pygame.draw.rect(screen,spike_color,spike2_hitbox,int(3*sf))
         pygame.draw.rect(screen,spike_color,spike3_hitbox,int(3*sf))
@@ -591,16 +666,24 @@ def Level2():
             projectile.x-=bg_move*2
 
         if character.colliderect(projectile):
+            LEV_II=False
             playLvl2=False
-
+            MAIN=True
         for case in pygame.event.get():
             if case.type==pygame.QUIT:
                 playLvl2=False
         keys=pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            GAME=False
-            playLvl2=False
-            MAIN=True
+            if GAME:
+                GAME=False
+                playLvl1=False
+                playLvl2=False
+                playLvl3=False
+                MAIN=True
+            else:
+                LEV_II=False
+                playLvl2=False
+                MAIN=True
         if jumping==False and keys[pygame.K_SPACE]:
             jumping = True
         if jumping:
@@ -611,7 +694,9 @@ def Level2():
                 lvl2_jump_move=20*sf
                 character.y=HEIGHT-100*sf
         if character.colliderect(spike1_hitbox) or character.colliderect(spike2_hitbox) or character.colliderect(spike3_hitbox):
+            LEV_II=False
             playLvl2=False
+            MAIN=True
         pygame.draw.rect(screen, char_color, character,int(3*sf))
         pygame.draw.rect(screen, enemy_color, enemy,int(3*sf))
         pygame.draw.rect(screen, projectile_color, projectile)
@@ -620,9 +705,11 @@ def Level2():
         screen.blit(spike3,(xs3,ys3))
         pygame.time.delay(20)
         pygame.display.update()
+    lvl2_end_time=time.time()
+    lvl2Score=round(lvl2_end_time-lvl2_start_time,0)
 
 def Level3():
-    global sf, GAME, MAIN
+    global sf, GAME, MAIN, LEV_III, playLvl1, playLvl2, playLvl3, lvl3Score, lvl3_start_time, lvl3Success, lvl3_end_time
     WIDTH=700*sf
     HEIGHT=600*sf
     screen=pygame.display.set_mode((WIDTH,HEIGHT))
@@ -642,6 +729,8 @@ def Level3():
     projectilesActive=False
     projectilesLeft=False
     projectilesRight=False
+    lvl3Score=0
+    lvl3_start_time=time.time()
 
     bossNewPos=0
 
@@ -748,15 +837,23 @@ def Level3():
     ybg=-200*sf
 
     while playLvl3:
+        print(round(time.time()-lvl3_start_time,0),'sec')
         os.system('cls')
         for case in pygame.event.get():
             if case.type==pygame.QUIT:
                 playLvl3=False
         keys=pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            GAME=False
-            playGame=False
-            MAIN=True
+            if GAME:
+                GAME=False
+                playLvl1=False
+                playLvl2=False
+                playLvl3=False
+                MAIN=True
+            else:
+                LEV_III=False
+                playLvl3=False
+                MAIN=True
         if keys[pygame.K_a] and character.x>=move:
             character.x-=move
             character_left.x-=move
@@ -793,7 +890,6 @@ def Level3():
                     bossPhase=0
         
         if bossPhase==2:
-            print('Phase2')
             if boss.x>WIDTH/2-boss_wb/2:
                 bossReturnLeft=False
                 bossReturnRight=True
@@ -807,13 +903,10 @@ def Level3():
                 bossRight=False
                 bossReturnRight=True
             if bossReturnLeft:
-                print('boss is returning from left')
                 boss.x+=move
             if bossReturnRight:
-                print('boss is returning from right')
                 boss.x-=move
             if boss.x==WIDTH/2-boss_wb/2:
-                print('boss has returned')
                 bossReturnLeft=False
                 bossReturnRight=False
                 projectilesOn=True
@@ -856,12 +949,10 @@ def Level3():
                     bossPhase=random.randint(1,2)
 
         if bossLeft:
-            print('phase1')
             boss.x-=move
             if boss.x<=0:
                 bossPhase=random.randint(1,2)
         if bossRight:
-            print('phase1')
             boss.x+=move
             if boss.x+boss_wb>=WIDTH:
                 bossPhase=random.randint(1,2)
@@ -876,15 +967,30 @@ def Level3():
             bossNewPos=0
 
         if character_left.colliderect(boss) or character_right.colliderect(boss):
-            playLvl3=False
-            print('Game Over\nYou lose')
+            if GAME:
+                lvl3Success=False
+                playLvl3=False
+                GAME=False
+                MAIN=True
+            else:
+                lvl3Success=False
+                playLvl3=False
+                LEV_III=False
+                MAIN=True
         if projectilesOn or projectilesActive:
             if character.colliderect(projectile1) or character.colliderect(projectile2) or character.colliderect(projectile3):
-                playLvl3=False
-                print('Game Over\nYou lose')
+                if GAME:
+                    lvl3Success=False
+                    playLvl3=False
+                    GAME=False
+                    MAIN=True
+                else:
+                    lvl3Success=False
+                    playLvl3=False
+                    LEV_III=False
+                    MAIN=True
         
         if character_bottom.colliderect(boss) and full_health==True:
-            print('e')
             full_health=False
             medium_health=True
             bossPhase=0
@@ -912,7 +1018,6 @@ def Level3():
                 bossPhase=random.randint(1,2)
                 bossNewPos=0
         if character_bottom.colliderect(boss) and medium_health==True:
-            print('ee')
             medium_health=False
             low_health=True
             bossPhase=0
@@ -937,8 +1042,10 @@ def Level3():
                 bossNewPos=0
 
         if character_bottom.colliderect(boss) and low_health==True:
+            lvl3Success=True
             playLvl3=False
-            print('Game Over\nYou win')
+            LEV_III=False
+            MAIN=True
 
         screen.blit(background,(xbg,ybg))
         screen.blit(Health_title,(xt,50*sf))
@@ -966,6 +1073,11 @@ def Level3():
             pygame.draw.rect(screen,projectile_color3,projectile3)
         pygame.time.delay(20)
         pygame.display.update()
+    lvl3_end_time=time.time()
+    if lvl3Success:
+        lvl3Score=round(lvl3_end_time-lvl3_start_time,0)
+    else:
+        lvl3Score=0
 
 def Game():
     Level1()
@@ -974,6 +1086,7 @@ def Game():
 
 while check:
     if MAIN:
+        print(lvl1Score, lvl2Score, lvl3Score)
         pygame.mouse.set_visible(True)
         pygame.display.set_caption('Menu')
         screen.blit(menuBackground,(0,0))
@@ -1015,9 +1128,6 @@ while check:
     if BACKGROUNDCOLOR:
         pygame.display.set_caption('Background Color')
         TitleMenu("BACKGROUND COLOR")
-        MainMenu(ColorsMenuList1,40*sf)
-        MainMenu(ColorsMenuList2,40*sf)
-        MainMenu(ColorsMenuList3,40*sf)
         ColorMenu()
         if keys[pygame.K_e]:
             BACKGROUNDCOLOR=False
@@ -1040,21 +1150,30 @@ while check:
             BACKGROUNDIMGS=False
             MAIN=True
     if LEV_I:
+        pygame.mouse.set_visible(False)
+        pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
         pygame.display.set_caption('Fallen Shinobi: Level 1')
         Level1()
         if keys[pygame.K_ESCAPE]:
+            playLvl1=False
             LEV_I=False
             MAIN=True
     if LEV_II:
+        pygame.mouse.set_visible(False)
+        pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
         pygame.display.set_caption('Fallen Shinobi: Level 2')
         Level2()
         if keys[pygame.K_ESCAPE]:
+            playLvl2=False
             LEV_II=False
             MAIN=True
     if LEV_III:
+        pygame.mouse.set_visible(False)
+        pygame.mouse.set_pos((WIDTH/2,HEIGHT/2))
         pygame.display.set_caption('Fallen Shinobi: Level 3')
         Level3()
         if keys[pygame.K_ESCAPE]:
+            playLvl3=False
             LEV_III=False
             MAIN=True
     if SCOREBOARD:
@@ -1074,7 +1193,9 @@ while check:
             MAIN=True
     if EXIT:
         TitleMenu("Game Over")
-        keepScore(gameScore)
+        if lvl1Score>0 and lvl2Score>0 and lvl3Score>0:
+            gameScore=lvl2Score-lvl1Score-lvl3Score
+            keepScore(gameScore)
         check=False
 
     for case in pygame.event.get():
@@ -1084,6 +1205,7 @@ while check:
     mouse_posR=pygame.mouse.get_pos()
     xmR=mouse_posR[0]
     ymR=mouse_posR[1]
+    # print(xmR,ymR)
     if case.type==pygame.MOUSEBUTTONUP:
         mouse_posUP=pygame.mouse.get_pos()
         xmUP=mouse_posUP[0]
@@ -1095,7 +1217,7 @@ while check:
             if keys[pygame.K_ESCAPE]:
                 SETT=False
                 MAIN=True
-        if MAIN and ((xmUP >20*sf and xmUP <80*sf) and (ymUP >350*sf and ymUP <390*sf))or SETT :
+        if MAIN and ((xmUP >50*sf and xmUP <80*sf) and (ymUP >300*sf and ymUP <330*sf))or SETT :
             MAIN=False
             SETT=True
         
@@ -1103,35 +1225,35 @@ while check:
         mouse_pos=pygame.mouse.get_pos()
         xm=mouse_pos[0]
         ym=mouse_pos[1]
-        if MAIN and ((xm >20*sf and xm <80*sf) and (ym >250*sf and ym <290*sf))or GAME:
+        if MAIN and ((xm >50*sf and xm <80*sf) and (ym >200*sf and ym <230*sf))or GAME:
             MAIN=False
             GAME=True
-        if MAIN and ((xm >20*sf and xm <80*sf) and (ym >300*sf and ym <340*sf))or INST :
+        if MAIN and ((xm >50*sf and xm <80*sf) and (ym >250*sf and ym <280*sf))or INST :
             MAIN=False
             INST=True
-        if MAIN and ((xm >20*sf and xm <80*sf) and (ym*sf >400 and ym <440*sf))or LEV_I :
+        if MAIN and ((xm >50*sf and xm <80*sf) and (ym >350*sf and ym <380*sf))or LEV_I :
             MAIN=False
             LEV_I=True
-        if MAIN and ((xm >20*sf and xm <80*sf) and (ym >450*sf and ym <490*sf))or LEV_II :
+        if MAIN and ((xm >50*sf and xm <80*sf) and (ym >400*sf and ym <430*sf))or LEV_II :
             MAIN=False
             LEV_II=True
-        if MAIN and ((xm >20*sf and xm <80*sf) and (ym >500*sf and ym <540*sf))or LEV_III :
+        if MAIN and ((xm >50*sf and xm <80*sf) and (ym >450*sf and ym <480*sf))or LEV_III :
             MAIN=False
             LEV_III=True
-        if MAIN and ((xm >20*sf and xm <80*sf) and (ym >550*sf and ym <590*sf))or SCOREBOARD :
+        if MAIN and ((xm >50*sf and xm <80*sf) and (ym >500*sf and ym <530*sf))or SCOREBOARD :
             MAIN=False
             SCOREBOARD=True
-        if MAIN and ((xm >20*sf and xm <80*sf) and (ym >600*sf and ym <640*sf))or EXIT :
+        if MAIN and ((xm >50*sf and xm <80*sf) and (ym >550*sf and ym <580*sf))or EXIT :
             MAIN=False
             EXIT=True
         #settings menu
-        if SETT and ((xm >20*sf and xm <80*sf) and (ym >250*sf and ym <290*sf)):
+        if SETT and ((xm >50*sf and xm <80*sf) and (ym >200*sf and ym <230*sf)):
             SETT=False
             SC_SIZE=True
-        if SETT and ((xm >20*sf and xm <80*sf) and (ym >300*sf and ym <340*sf)):
+        if SETT and ((xm >50*sf and xm <80*sf) and (ym >250*sf and ym <280*sf)):
             SETT=False
             BACKGROUNDIMGS=True
-        if SETT and ((xm >20*sf and xm <80*sf) and (ym >350*sf and ym <390*sf)):
+        if SETT and ((xm >50*sf and xm <80*sf) and (ym >300*sf and ym <330*sf)):
             SETT=False
             BACKGROUNDCOLOR=True
     pygame.display.update()
