@@ -34,6 +34,7 @@ BACKGROUNDIMGS=False
 playLvl1=True
 playLvl2=True
 playLvl3=True
+displayBGimg=True
 
 screen=pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption('Final Game')
@@ -65,9 +66,12 @@ INST_FNT=pygame.font.SysFont('calibri',int(25*sf))
 
 #Menu Screen Variables
 def TitleMenu(Message):
-    global sf, menuBackground
+    global sf, menuBackground, displayBGimg, background_color
     text=TITLE_FNT.render(Message,1,'black')
-    screen.blit(menuBackground,(0,0))
+    if displayBGimg:
+        screen.blit(menuBackground,(0,0))
+    else:
+        screen.fill(background_color)
     xt=WIDTH/2-text.get_width()/2
     screen.blit(text,(xt,50*sf))
 square_button=pygame.Rect(xs_btn,ys_btn,wb_btn,hb_btn)
@@ -166,8 +170,11 @@ inst6=INST_FNT.render('Make sure to click the exit button to record your score.'
 
 #displaying instructions screen
 def instScreen():
-    global sf, menuBackground
-    screen.blit(menuBackground,(0,0))
+    global sf, displayBGimg, background_color
+    if displayBGimg:
+        screen.blit(menuBackground,(0,0))
+    else:
+        screen.fill(background_color)
     screen.blit(title,(xt,50*sf))
     screen.blit(Instructions,(200*sf,240*sf))
     screen.blit(inst1,(10*sf,300*sf))
@@ -265,8 +272,15 @@ def screensizeChange():
         xmUP=0
         ymUP=0
 
+def imageSelect():
+    global displayBGimg
+    if ((xmUP>90*sf and xmUP<120*sf) and (ymUP>200*sf and ymUP<230*sf)) and ((xmR>90*sf and xmR<120*sf) and (ymR>200*sf and ymR<230*sf)):
+        displayBGimg=True
+    if ((xmUP>90*sf and xmUP<120*sf) and (ymUP>250*sf and ymUP<280*sf)):
+        displayBGimg=False
+
 def Level1():
-    global sf, GAME, MAIN, LEV_I, playLvl1, playLvl2, playLvl3, lvl1_start_time, lvl1_end_time, lvl1Score, lvl1Success
+    global sf, GAME, MAIN, LEV_I, playLvl1, playLvl2, playLvl3, lvl1_start_time, lvl1_end_time, lvl1Score, lvl1Success, background_color, displayBGimg
     WIDTH=700*sf
     HEIGHT=600*sf
     screen=pygame.display.set_mode((WIDTH,HEIGHT))
@@ -281,6 +295,10 @@ def Level1():
     shootProjectile=False
     lvl1Score=0
     lvl1_start_time=time.time()
+    Leftchar=False
+    Rightchar=True
+    WalkCount=0
+    clock=pygame.time.Clock()
 
     #character variables
     char_hb=30*sf
@@ -288,6 +306,10 @@ def Level1():
     xc=0
     yc=HEIGHT-30*sf
     character=pygame.Rect(xc,yc,char_wb,char_hb)
+
+    characterImg=pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightIdle\images\Right-Idles_03.png'),(60*sf,60*sf))
+    characterRunLeft=[pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_01.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_02.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_03.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_04.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_05.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_06.png'),(60*sf,60*sf))]
+    characterRunRight=[pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_01.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_02.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_03.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_04.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_05.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_06.png'),(60*sf,60*sf))]
 
     #left hitbox
     char_left_hb=10*sf
@@ -419,7 +441,6 @@ def Level1():
         print(round(time.time()-lvl1_start_time,0),'sec')
         yc2=character.y+char_hb
         os.system('cls')
-        screen.blit(background1,(0,0))
         for case in pygame.event.get():
             if case.type==pygame.QUIT:
                 playLvl1=False
@@ -438,17 +459,40 @@ def Level1():
                 playLvl1=False
                 MAIN=True
         if keys[pygame.K_a] and character.x>=move and not platform1.colliderect(character_left) and not platform2.colliderect(character_left) and not platform3.colliderect(character_left) and not platform4.colliderect(character_left) and not platform5.colliderect(character_left) and not platform6.colliderect(character_left) and not platform7.colliderect(character_left):
+            Leftchar=True
+            Rightchar=False
             character.x-=move
             character_left.x-=move
             character_right.x-=move
             character_top.x-=move
             character_bottom.x-=move
-        if keys[pygame.K_d] and character.x<=WIDTH-(char_wb+move) and not platform1.colliderect(character_right) and not platform2.colliderect(character_right) and not platform3.colliderect(character_right) and not platform4.colliderect(character_right) and not platform5.colliderect(character_right) and not platform6.colliderect(character_right) and not platform7.colliderect(character_right) and not enemy2.colliderect(character_right):
+        elif keys[pygame.K_d] and character.x<=WIDTH-(char_wb+move) and not platform1.colliderect(character_right) and not platform2.colliderect(character_right) and not platform3.colliderect(character_right) and not platform4.colliderect(character_right) and not platform5.colliderect(character_right) and not platform6.colliderect(character_right) and not platform7.colliderect(character_right) and not enemy2.colliderect(character_right):
+            Leftchar=False
+            Rightchar=True
             character.x+=move
             character_left.x+=move
             character_right.x+=move
             character_top.x+=move
             character_bottom.x+=move
+        else:
+            if Leftchar:
+                characterImg=pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftIdle\Left-Idles_03.png'),(60*sf,60*sf))
+                Leftchar=False
+                WalkCount=0
+            if Rightchar:
+                characterImg=pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightIdle\images\Right-Idles_03.png'),(60*sf,60*sf))
+                Rightchar=False
+                WalkCount=0
+        
+        if WalkCount+1>=18:
+            WalkCount=0
+        if Leftchar and keys[pygame.K_a]:
+            characterImg=(characterRunLeft[WalkCount//3])
+            WalkCount+=1
+        elif Rightchar and keys[pygame.K_d]:
+            characterImg=(characterRunRight[WalkCount//3])
+            WalkCount+=1
+        
         if jumping==False and keys[pygame.K_SPACE] and Falling==False and bump==False:
             jumping=True
 
@@ -537,6 +581,11 @@ def Level1():
         pygame.draw.rect(screen,char_side_color,character_right)
         pygame.draw.rect(screen,char_side_color,character_top)
         pygame.draw.rect(screen,char_side_color,character_bottom)
+        if displayBGimg:
+            screen.blit(background1,(0,0))
+        else:
+            screen.fill(background_color)
+        screen.blit(characterImg,(character.x-15*sf,character.y-15*sf))
         pygame.draw.rect(screen,proj_color,projectile)
         pygame.draw.rect(screen,portal_color,portal,int(3*sf))
         screen.blit(plat1_img,(xpl1,ypl1))
@@ -546,7 +595,7 @@ def Level1():
         screen.blit(plat5_img,(xpl5,ypl5))
         screen.blit(plat6_img,(xpl6,ypl6))
         screen.blit(plat7_img,(xpl7,ypl7))
-        pygame.time.delay(20)
+        clock.tick(24)
         pygame.display.update()
     lvl1_end_time=time.time()
     if lvl1Success:
@@ -555,7 +604,7 @@ def Level1():
         lvl1Score=0
 
 def Level2():
-    global sf, GAME, MAIN, LEV_II, playLvl1, playLvl2, playLvl3, lvl2Score, lvl2_start_time, lvl2_end_time
+    global sf, GAME, MAIN, LEV_II, playLvl1, playLvl2, playLvl3, lvl2Score, lvl2_start_time, lvl2_end_time, background_color, displayBGimg
     WIDTH=700*sf
     HEIGHT=600*sf
     screen=pygame.display.set_mode((WIDTH,HEIGHT))
@@ -565,6 +614,8 @@ def Level2():
     spawnEnemy=1
     lvl2Score=0
     lvl2_start_time=time.time()
+    WalkCount=0
+    clock=pygame.time.Clock()
 
     colors={'red':[255,0,0],'orange':[255,165,0],'yellow':[255,255,0],'green':[0,255,00],
     'blue':[0,0,255],'purple':[128,0,128],'cyan':[0,255,255],'magenta':[255,0,255],
@@ -607,6 +658,9 @@ def Level2():
     yc=HEIGHT-100*sf
     character=pygame.Rect(xc,yc,char_wb,char_hb)
 
+    characterImg=pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightIdle\images\Right-Idles_03.png'),(60*sf,60*sf))
+    characterRunRight=[pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_01.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_02.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_03.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_04.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_05.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_06.png'),(60*sf,60*sf))]
+
     #enemy variables
     enemy_hb=30*sf
     enemy_wb=30*sf
@@ -626,8 +680,6 @@ def Level2():
         pygame.draw.rect(screen,spike_color,spike1_hitbox,int(3*sf))
         pygame.draw.rect(screen,spike_color,spike2_hitbox,int(3*sf))
         pygame.draw.rect(screen,spike_color,spike3_hitbox,int(3*sf))
-        screen.blit(background,(xb,0))
-        screen.blit(background,(xb2,0))
         spike1_hitbox.x=xs1
         spike2_hitbox.x=xs2
         spike3_hitbox.x=xs3
@@ -693,23 +745,35 @@ def Level2():
                 jumping=False
                 lvl2_jump_move=20*sf
                 character.y=HEIGHT-100*sf
+        
+        if WalkCount+1>=18:
+            WalkCount=0
+        characterImg=(characterRunRight[WalkCount//3])
+        WalkCount+=1
+        
         if character.colliderect(spike1_hitbox) or character.colliderect(spike2_hitbox) or character.colliderect(spike3_hitbox):
             LEV_II=False
             playLvl2=False
             MAIN=True
         pygame.draw.rect(screen, char_color, character,int(3*sf))
+        if displayBGimg:
+            screen.blit(background,(xb,0))
+            screen.blit(background,(xb2,0))
+        else:
+            screen.fill(background_color)
+        screen.blit(characterImg,(character.x-15*sf,character.y-15*sf))
         pygame.draw.rect(screen, enemy_color, enemy,int(3*sf))
         pygame.draw.rect(screen, projectile_color, projectile)
         screen.blit(spike1,(xs1,ys1))
         screen.blit(spike2,(xs2,ys2))
         screen.blit(spike3,(xs3,ys3))
-        pygame.time.delay(20)
+        clock.tick(42)
         pygame.display.update()
     lvl2_end_time=time.time()
     lvl2Score=round(lvl2_end_time-lvl2_start_time,0)
 
 def Level3():
-    global sf, GAME, MAIN, LEV_III, playLvl1, playLvl2, playLvl3, lvl3Score, lvl3_start_time, lvl3Success, lvl3_end_time
+    global sf, GAME, MAIN, LEV_III, playLvl1, playLvl2, playLvl3, lvl3Score, lvl3_start_time, lvl3Success, lvl3_end_time, background_color, displayBGimg
     WIDTH=700*sf
     HEIGHT=600*sf
     screen=pygame.display.set_mode((WIDTH,HEIGHT))
@@ -731,6 +795,10 @@ def Level3():
     projectilesRight=False
     lvl3Score=0
     lvl3_start_time=time.time()
+    Leftchar=False
+    Rightchar=True
+    WalkCount=0
+    clock=pygame.time.Clock()
 
     bossNewPos=0
 
@@ -759,6 +827,10 @@ def Level3():
     xc=60*sf
     yc=HEIGHT-80*sf
     character=pygame.Rect(xc,yc,char_wb,char_hb)
+
+    characterImg=pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightIdle\images\Right-Idles_03.png'),(60*sf,60*sf))
+    characterRunLeft=[pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_01.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_02.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_03.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_04.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_05.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftMove\images\\runleft_06.png'),(60*sf,60*sf))]
+    characterRunRight=[pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_01.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_02.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_03.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_04.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_05.png'),(60*sf,60*sf)),pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightMove\images\characterRunRight_06.png'),(60*sf,60*sf))]
 
     #left hitbox
     char_left_hb=10*sf
@@ -855,15 +927,38 @@ def Level3():
                 playLvl3=False
                 MAIN=True
         if keys[pygame.K_a] and character.x>=move:
+            Leftchar=True
+            Rightchar=False
             character.x-=move
             character_left.x-=move
             character_right.x-=move
             character_bottom.x-=move
-        if keys[pygame.K_d] and character.x<=WIDTH-(char_wb+move):
+        elif keys[pygame.K_d] and character.x<=WIDTH-(char_wb+move):
+            Leftchar=False
+            Rightchar=True
             character.x+=move
             character_left.x+=move
             character_right.x+=move
             character_bottom.x+=move
+        else:
+            if Leftchar:
+                characterImg=pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterLeftIdle\Left-Idles_03.png'),(60*sf,60*sf))
+                Leftchar=False
+                WalkCount=0
+            elif Rightchar:
+                characterImg=pygame.transform.scale(pygame.image.load('FinalGame\Sprites\SpriteSheets\characterRightIdle\images\Right-Idles_03.png'),(60*sf,60*sf))
+                Rightchar=False
+                WalkCount=0
+        
+        if WalkCount+1>=18:
+            WalkCount=0
+        if Leftchar and keys[pygame.K_a]:
+            characterImg=(characterRunLeft[WalkCount//3])
+            WalkCount+=1
+        if Rightchar and keys[pygame.K_d]:
+            characterImg=(characterRunRight[WalkCount//3])
+            WalkCount+=1
+        
         if jumping==False and keys[pygame.K_SPACE]:
             jumping=True
 
@@ -1042,17 +1137,26 @@ def Level3():
                 bossNewPos=0
 
         if character_bottom.colliderect(boss) and low_health==True:
-            lvl3Success=True
-            playLvl3=False
-            LEV_III=False
-            MAIN=True
-
-        screen.blit(background,(xbg,ybg))
-        screen.blit(Health_title,(xt,50*sf))
+            if GAME:
+                lvl3Success=True
+                playLvl3=False
+                GAME=False
+                MAIN=True
+            else:
+                lvl3Success=True
+                playLvl3=False
+                LEV_III=False
+                MAIN=True
         pygame.draw.rect(screen,char_color,character,int(3*sf))
         pygame.draw.rect(screen,char_side_color,character_left)
         pygame.draw.rect(screen,char_side_color,character_right)
         pygame.draw.rect(screen,char_side_color,character_bottom)
+        if displayBGimg:
+            screen.blit(background,(xbg,ybg))
+        else:
+            screen.fill(background_color)
+        screen.blit(Health_title,(xt,50*sf))
+        screen.blit(characterImg,(character.x-15*sf,character.y-15*sf))
         pygame.draw.rect(screen,boss_color,boss,int(3*sf))
         if full_health:
             pygame.draw.rect(screen,health_color3,healthPoint1)
@@ -1071,7 +1175,7 @@ def Level3():
             pygame.draw.rect(screen,projectile_color1,projectile1)
             pygame.draw.rect(screen,projectile_color2,projectile2)
             pygame.draw.rect(screen,projectile_color3,projectile3)
-        pygame.time.delay(20)
+        clock.tick(24)
         pygame.display.update()
     lvl3_end_time=time.time()
     if lvl3Success:
@@ -1089,7 +1193,10 @@ while check:
         print(lvl1Score, lvl2Score, lvl3Score)
         pygame.mouse.set_visible(True)
         pygame.display.set_caption('Menu')
-        screen.blit(menuBackground,(0,0))
+        if displayBGimg:
+            screen.blit(menuBackground,(0,0))
+        else:
+            screen.fill(background_color)
         TitleMenu("Fallen Shinobi")
         MainMenu(MenuList,0)
     if GAME:
@@ -1139,10 +1246,7 @@ while check:
         pygame.display.set_caption('Background IMAGES')
         TitleMenu("BACKGROUND IMAGES")
         MainMenu(bgimgsList,40*sf)
-        if ((xm>90 and xm<120) and (ym>250 and ym<290)):
-            ShowBackgroundImgs=True
-        if ((xm>90 and xm<120) and (ym>300 and ym<340)):
-            ShowBackgroundImgs=False
+        imageSelect()
         if keys[pygame.K_e]:
             BACKGROUNDIMGS=False
             SETT=True
